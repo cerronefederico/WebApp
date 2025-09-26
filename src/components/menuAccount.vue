@@ -1,5 +1,5 @@
 <template>
-<div class="position-fixed top-0 end-0 m-3">
+<div>
     <div class="dropdown">
         <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             Benvenuto Giovanni <i class="bi bi-person-circle"></i>

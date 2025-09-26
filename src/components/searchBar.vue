@@ -3,9 +3,6 @@
 </script>
 
 <template>
-  <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#searchModal" style="position: absolute; top: 100px;">
-  Ricerca
-</button>
 <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">

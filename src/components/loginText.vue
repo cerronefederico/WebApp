@@ -1,6 +1,6 @@
 <template>
   <div style="position: absolute; top:220px; right: 100px;">
-    <div class="card text-bg-dark p-4 shadow-sm">
+    <div class="card border-black p-4 shadow-sm">
       <h2 class="card-title text-center mb-4">Accedi</h2>
       <form @submit.prevent="handleLogin">
         <div class="mb-3">

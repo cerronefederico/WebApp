@@ -4,8 +4,8 @@
 
 
 <template>
-<div class="row row-cols-md-3" style="width: 1200px; position: absolute; top:500px; left: 100px;">
-  <div class="col">
+<div class="row row-cols-md-3" style="; width: 1200px; margin-top: 500px; margin-left: 100px;">
+  <div class="col position-relati">
     <div class="card mb-3">
   <div class="row g-0">
     <div class="col-md-4">
@@ -118,6 +118,7 @@
 
 
 </div>
+
 </template>
 
 <script>

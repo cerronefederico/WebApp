@@ -1,5 +1,5 @@
 <template>
-  <div class="position-fixed top-0 start-0 m-3 z-index-100">
+  <div class="z-index-100">
     <button
       class="btn btn-outline-dark btn-lg"
       type="button"

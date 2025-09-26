@@ -17,7 +17,7 @@ import SearchBar from "@/components/searchBar.vue";
     <h1>ModuView</h1>
     </div>
 
-  <MenuAccount class="top-0 end-0"></MenuAccount>
+  <MenuAccount></MenuAccount>
 </header>
   <SearchBar></SearchBar>
 
@@ -36,7 +36,7 @@ import SearchBar from "@/components/searchBar.vue";
   height:auto;
 
   display: flex;
-  justify-content: space-between; /* Mantiene spazio tra i tre blocchi (Left, Center, Right) */
+  justify-content: space-between;
   align-items: center;
   background-color: rgba(125,125,125,0.7);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -44,16 +44,18 @@ import SearchBar from "@/components/searchBar.vue";
 }
 
 .header-left {
+  flex-shrink: 1;
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  min-width: 0;
 }
 
 .header-center {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 1%;
+  flex-grow: 1;
+  text-align: center;
+  paddind: 0 0.5rem;
+  min-width: 0;
 }
 .main-content-area{
   display: flex;
@@ -65,6 +67,17 @@ import SearchBar from "@/components/searchBar.vue";
   flex-direction: column;
   gap: 15px;
 }
-
+.app-header-fixed > :last-child{
+  flex-shrink: 1;
+  min-width: 0;
+}
+h1 {
+  margin: 0;
+  /* La funzione clamp() controlla il ridimensionamento del font */
+  font-size: clamp(1.2rem, 3vw, 2.5rem);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 </style>

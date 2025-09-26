@@ -4,9 +4,9 @@
 
 
 <template>
-<div class="row row-cols-md-3" style="; width: 1200px; margin-top: 500px; margin-left: 100px;">
-  <div class="col position-relati">
-    <div class="card mb-3">
+<div class="row row-cols-md-3 mx-auto mt-5 p-4 " style="width: 1200px;background-color:rgba(125,125,125,0.7)">
+  <div class="col position-relative">
+    <div class="card mb-3 bg-gray shadow-2xl">
   <div class="row g-0">
     <div class="col-md-4">
 

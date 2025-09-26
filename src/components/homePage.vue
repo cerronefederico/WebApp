@@ -38,7 +38,7 @@ import SearchBar from "@/components/searchBar.vue";
   display: flex;
   justify-content: space-between; /* Mantiene spazio tra i tre blocchi (Left, Center, Right) */
   align-items: center;
-  background-color: #f8f9fa;
+  background-color: rgba(125,125,125,0.7);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
@@ -54,9 +54,16 @@ import SearchBar from "@/components/searchBar.vue";
   left: 50%;
   transform: translateX(-50%);
   margin-top: 1%;
-
-
-
+}
+.main-content-area{
+  display: flex;
+  width: 96%;
+  max-width: 1400px;
+  margin-left:auto;
+  margin-right: auto;
+  margin-top:100px;
+  flex-direction: column;
+  gap: 15px;
 }
 
 

@@ -1,6 +1,10 @@
 <template>
-  <div style="position: absolute; top:220px; right: 100px;">
-    <div class="card border-black p-4 shadow-sm">
+  <div class="d-flex justify-content-center align-items-center h-100 w-100">
+    <div class="card p-4 shadow-lg" style="max-width: 400px; width: 100%; border:none;">
+      <h1 class="text-center mb-4" style="max-width: 400px; width: 100%;border:none;">
+        **PLC Monitor**
+      </h1>
+
       <h2 class="card-title text-center mb-4">Accedi</h2>
       <form @submit.prevent="handleLogin">
         <div class="mb-3">
@@ -63,3 +67,8 @@ export default {
   }
 };
 </script>
+<style scoped>
+.shadow-lg {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+</style>

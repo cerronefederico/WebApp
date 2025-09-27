@@ -61,11 +61,11 @@ import SearchBar from "@/components/searchBar.vue";
   display: flex;
   width: 96%;
   max-width: 1400px;
-  margin-left:auto;
-  margin-right: auto;
   margin-top:100px;
   flex-direction: column;
   gap: 15px;
+  align-items: center;
+  margin: 100px auto 0 auto;
 }
 .app-header-fixed > :last-child{
   flex-shrink: 1;

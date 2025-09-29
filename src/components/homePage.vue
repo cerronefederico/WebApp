@@ -22,7 +22,22 @@ import SearchBar from "@/components/searchBar.vue";
   <SearchBar></SearchBar>
 
   <main class="main-content-area">
-    <PlcElement></PlcElement>
+        <div class="global-summary d-flex justify-content-center gap-3 mb-5">
+
+        <span class="badge rounded-pill bg-danger shadow-sm p-3 fs-6">
+            <i class="bi bi-bell-fill"></i> Total Alerts: 5
+        </span>
+
+        <span class="badge rounded-pill bg-warning text-dark shadow-sm p-3 fs-6">
+            <i class="bi bi-exclamation-square-fill"></i> Total Warnings: 9
+        </span>
+
+        <span class="badge rounded-pill bg-success shadow-sm p-3 fs-6">
+            <i class="bi bi-check-circle-fill"></i> Systems Online: 12
+        </span>
+
+    </div>
+        <PlcElement></PlcElement>
   </main>
 </template>
 
@@ -38,7 +53,7 @@ import SearchBar from "@/components/searchBar.vue";
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(125,125,125,0.7);
+  background-color: rgba(125,125,125,1);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
@@ -58,13 +73,9 @@ import SearchBar from "@/components/searchBar.vue";
   min-width: 0;
 }
 .main-content-area{
-  display: flex;
-  width: 96%;
-  max-width: 1400px;
-  margin-top:100px;
-  flex-direction: column;
-  gap: 15px;
-  align-items: center;
+  display: block;
+  width: 100%;
+  padding: 0;
   margin: 100px auto 0 auto;
 }
 .app-header-fixed > :last-child{

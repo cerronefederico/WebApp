@@ -1,38 +1,31 @@
 <template>
 <ul class="list-group">
-  <li class="list-group-item">
-    contatore pezzi totale {{item.contatore}}
-  </li>
-  <li class="list-group-item">A second item</li>
-  <li class="list-group-item">A third item</li>
-  <li class="list-group-item">A fourth item</li>
-  <li class="list-group-item">And a fifth one</li>
-</ul>
+    <li class="list-group-item">
+    {{plc1.getAcceso}} {{plc1.getBlocco}} {{plc1.getRegime}} {{plc1.getWTermico}} {{plc1.getWAnomaliaNastro}} {{plc1.getWMancanzaProdotto}} {{plc1.getWPieno}} {{plc1.getWPortelloneAperto}} {{plc1.getAAnomaliaGenerica}} {{plc1.getAMotoreNastro}} {{plc1.getAMancanzaConsenso}} {{plc1.getATemperaturaProdottoAlta}} {{plc1.getAEmergenzaInserita}} {{plc1.getATemperaturaCpuElevata}} {{plc1.getAAggraffatriceSpenta}} {{plc1.getANastroSpento}} {{plc1.getContatorePezziTotale}} {{plc1.getContatorePezziParziale}} {{plc1.contatorePezziParzialiBackup}} {{plc1.getVelocitaProduzionePezziMinuto}} {{plc1.getTemperaturaCpu}}
+    </li>
+    </ul>
 </template>
+
 <script>
-import axios from "axios";
+import { usePlc1Store, usePlc2Store, usePlc3Store } from '@/stores/index';
+import { useWebSocketStore } from '@/stores/webSoket';
 
 export default {
-  name: 'StatistichePlc',
-  data() {
+  setup() {
+    const plc1 = usePlc1Store();
+    const plc2 = usePlc2Store();
+    const plc3 = usePlc3Store();
+
+    const wsStore = useWebSocketStore();
+
     return {
-      items: []
+      plc1,
+      plc2,
+      plc3,
+      wsStore
     };
-  },
-  mounted() {
-    this.getItems();
-  },
-  methods: {
-    async getItems() {
-      try {
-        const response = await axios.get('http://localhost:5000/plc1/getContatori');
-        this.items = response.data;
-      } catch (error) {
-        console.log(error);
-      }
-    }
   }
-}
+};
 </script>
 
 <style scoped>

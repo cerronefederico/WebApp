@@ -3,6 +3,22 @@ import MenuAccount from "@/components/menuAccount.vue";
 import MenuHamburgher from "@/components/menuHamburgher.vue";
 import PlcElement from "@/components/plcElement.vue";
 import SearchBar from "@/components/searchBar.vue";
+import { computed } from 'vue';
+import { usePlc1Store, usePlc2Store, usePlc3Store } from '@/stores/index';
+
+const plc1 = usePlc1Store();
+const plc2 = usePlc2Store();
+const plc3 = usePlc3Store();
+
+const totalAlerts = computed(() => {return plc1.getNumeroAllarmi + plc2.getNumeroAllarmi + plc3.getNumeroAllarmi;});
+const totalWarnings = computed(() => {return plc1.getNumeroWarning + plc2.getNumeroWarning + plc3.getNumeroWarning;});
+const totalOnline = computed(() => {
+  let cont=0;
+  if(plc1.getAcceso){cont++;}
+  if(plc2.getAcceso){cont++;}
+  if(plc3.getAcceso){cont++;}
+  return cont;
+});
 </script>
 
 <template>
@@ -25,15 +41,15 @@ import SearchBar from "@/components/searchBar.vue";
         <div class="global-summary d-flex justify-content-center gap-3 mb-5">
 
         <span class="badge rounded-pill bg-danger shadow-sm p-3 fs-6">
-            <i class="bi bi-bell-fill"></i> Total Alerts: 5
+            <i class="bi bi-bell-fill"></i> Total Alerts: {{totalAlerts}}
         </span>
 
         <span class="badge rounded-pill bg-warning text-dark shadow-sm p-3 fs-6">
-            <i class="bi bi-exclamation-square-fill"></i> Total Warnings: 9
+            <i class="bi bi-exclamation-square-fill"></i> Total Warnings: {{totalWarnings}}
         </span>
 
         <span class="badge rounded-pill bg-success shadow-sm p-3 fs-6">
-            <i class="bi bi-check-circle-fill"></i> Systems Online: 12
+            <i class="bi bi-check-circle-fill"></i> Systems Online: {{totalOnline}}
         </span>
 
     </div>

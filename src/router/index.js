@@ -16,8 +16,8 @@ const routes = [
     component: HomePage
   },
   {
-    path: '/home/plc',
-    name: 'Plc',
+    path: '/home/plc1',
+    name: 'Plc1',
     component: plcPage
   }
 ]

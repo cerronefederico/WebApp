@@ -96,8 +96,8 @@ export const useWebSocketStore = defineStore('websocketConnection', {
                 if (allPlcData[plcId].contatorePezziParziale !== undefined) {
                     plcStore.setContatorePezziParziale(allPlcData[plcId].contatorePezziParziale);
                 }
-                if (allPlcData[plcId].contatorePezziParzialiBackup !== undefined) {
-                    plcStore.setContatorePezziParzialiBackup(allPlcData[plcId].contatorePezziParzialiBackup);
+                if (allPlcData[plcId].contatorePezziParzialeBackup !== undefined) {
+                    plcStore.setContatorePezziParzialeBackup(allPlcData[plcId].contatorePezziParzialeBackup);
                 }
                 if (allPlcData[plcId].velocitaProduzionePezziMinuto !== undefined) {
                     plcStore.setVelocitaProduzionePezziMinuto(allPlcData[plcId].velocitaProduzionePezziMinuto);

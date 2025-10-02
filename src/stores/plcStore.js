@@ -21,7 +21,7 @@ export const createPlcStore = (plcId) => {
             aNastroSpento: null,
             contatorePezziTotale: null,
             contatorePezziParziale: null,
-            contatorePezziParzialiBackup: null,
+            contatorePezziParzialeBackup: null,
             velocitaProduzionePezziMinuto: null,
             temperaturaCpu: null,
         }),
@@ -80,8 +80,8 @@ export const createPlcStore = (plcId) => {
             setContatorePezziParziale(valore) {
                 this.contatorePezziParziale = valore;
             },
-            setContatorePezziParzialiBackup(valore) {
-                this.contatorePezziParzialiBackup = valore;
+            setContatorePezziParzialeBackup(valore) {
+                this.contatorePezziParzialeBackup = valore;
             },
             setVelocitaProduzionePezziMinuto(valore) {
                 this.velocitaProduzionePezziMinuto = valore;
@@ -110,7 +110,7 @@ export const createPlcStore = (plcId) => {
                 return state.wMancanzaProdotto !== null ? state.wMancanzaProdotto : 'N/D';
             },
             getWPieno: (state) => {
-                return state.wPieno === null ? null : state.wPieno === 'N/D';
+                return state.wPieno !== null ? state.wPieno : 'N/D';
             },
             getWPortelloneAperto: (state) => {
                 return state.wPortelloneAperto !== null ? state.wPortelloneAperto : 'N/D';
@@ -154,6 +154,27 @@ export const createPlcStore = (plcId) => {
             getTemperaturaCpu: (state) =>{
                 return state.temperaturaCpu !== null ? state.temperaturaCpu : 'N/D';
             },
+            getNumeroAllarmi: (state) => {
+                let count = 0;
+                if (state.aAnomaliaGenerica) { count++; }
+                if (state.aMotoreNastro) { count++; }
+                if (state.aMancanzaConsenso) { count++; }
+                if (state.aTemperaturaProdottoAlta) { count++; }
+                if (state.aEmergenzaInserita) { count++; }
+                if (state.aTemperaturaCpuElevata) { count++; }
+                if (state.aAggraffatriceSpenta) { count++; }
+                if (state.aNastroSpento) { count++; }
+                return count;
+            },
+            getNumeroWarning: (state) => {
+                let count = 0;
+                if (state.wTermico) { count++; }
+                if (state.wAnomaliaNastro) { count++; }
+                if (state.wMancanzaProdotto) { count++; }
+                if (state.wPieno) { count++; }
+                if (state.wPortelloneAperto) { count++; }
+                return count;
+            }
         }
     });
 };

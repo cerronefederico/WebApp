@@ -1,22 +1,55 @@
-<script setup lang="ts">
-import { ref } from 'vue';
+<script  setup lang="ts">
+import { ref, onMounted, onBeforeUnmount , computed} from 'vue';
+import { Popover } from 'bootstrap';
 import StatistichePlc from "@/components/statistichePlc.vue";
+import ContatorePlc from "@/components/contatorePlc.vue";
+import { usePlc1Store} from '@/stores/index';
+import WarningPlc from "@/components/warningPlc.vue";
+
+const pallinoElement = ref(null);
+let popoverInstance = null;
+
+onMounted(() => {
+  if (pallinoElement.value) {
+    popoverInstance = new Popover(pallinoElement.value);
+  }
+});
+
+onBeforeUnmount(() => {
+    if (popoverInstance) {
+        popoverInstance.dispose();
+    }
+});
+const pallinoStyle = computed(() => {
+    let backgroundColor = '#6c757d';
+    if (plc1.acceso === false) {
+        backgroundColor = 'red';
+    }
+    else if (plc1.acceso === true && plc1.blocco === true) {
+        backgroundColor = 'yellow';
+    }
+    else if (plc1.acceso === true && plc1.blocco !== true && plc1.regime === true) {
+        backgroundColor = 'blue';
+    }
+    else if (plc1.acceso === true && plc1.blocco !== true && plc1.regime !== true) {
+        backgroundColor = 'green';
+    }
+    return {
+        'background-color': backgroundColor,
+        cursor: 'pointer',
+        height: '24px',
+        width: '24px',
+    };
+});
+
+
+const plc1 = usePlc1Store();
 
 const plcData = ref({
-    name: "PLC Assemblaggio C2",
-    ip: "192.168.1.133",
-    status: "Operativo",
     plcImageUrl: "https://placehold.co/150x150/007bff/ffffff?text=PLC",
 });
 
-const activeTab = ref('alarmi');
 
-// Dati di esempio per la tabella Allarmi
-const alarms = ref([
-    { id: 101, timestamp: '2025-09-27 10:30:15', description: 'Sensore di pressione critico (Linea 1)', severity: 'Critico' },
-    { id: 204, timestamp: '2025-09-27 11:05:40', description: 'Guasto al motore asincrono', severity: 'Grave' },
-    { id: 312, timestamp: '2025-09-27 12:45:00', description: 'Anomalia temperatura, fuori specifica', severity: 'Basso' },
-]);
 </script>
 
 <template>
@@ -33,20 +66,67 @@ const alarms = ref([
             <img :src="plcData.plcImageUrl" alt="Immagine PLC" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
 
             <!-- Dati PLC -->
-            <h4 class="card-title text-primary">{{ plcData.name }}</h4>
+            <h4 class="card-title text-primary">PLC1</h4>
             <ul class="list-group list-group-flush text-start">
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 <strong>Indirizzo IP:</strong>
-                <span>{{ plcData.ip }}</span>
+
+                 <span
+      ref="pallinoElement"
+      tabindex="0"
+      class="d-inline-block p-2 rounded-circle"
+      :style="pallinoStyle"
+
+      data-bs-toggle="popover"
+      data-bs-trigger="hover"
+      data-bs-placement="top"
+      data-bs-html="true"
+      data-bs-title="Legenda Stato Colori"
+
+      data-bs-content='
+    <ul class="list-unstyled mb-0 small">
+        <li class="d-flex align-items-center mb-1">
+            <span class="d-inline-block rounded-circle me-2" style="width: 10px; height: 10px; background-color: blue;"></span>
+            <span class="fw-bold text-primary">Blu</span>: A regime
+        </li>
+        <li class="d-flex align-items-center">
+            <span class="d-inline-block rounded-circle me-2" style="width: 10px; height: 10px; background-color: gray;"></span>
+            <span class="fw-bold text-success">Verde</span>: Accesa
+        </li>
+        <li class="d-flex align-items-center mb-1">
+            <span class="d-inline-block rounded-circle me-2" style="width: 10px; height: 10px; background-color: yellow;"></span>
+            <span class="fw-bold text-warning">Giallo</span>: In Bloco
+        </li>
+        <li class="d-flex align-items-center mb-1">
+            <span class="d-inline-block rounded-circle me-2" style="width: 10px; height: 10px; background-color: red;"></span>
+            <span class="fw-bold text-danger">Rosso</span>: Spenta
+        </li>
+    </ul>
+'
+      aria-label="Informazioni sui colori dello stato"
+    >
+    </span>
+
+
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 <strong>Stato Macchina:</strong>
-                <span :class="{'text-success': plcData.status === 'Operativo', 'text-danger': plcData.status !== 'Operativo'}">
-                  {{ plcData.status }}
-                </span>
+                <span>192.168.40.13</span>
               </li>
-              <li class="list-group-item">
-                <!-- Altri dati specifici da inserire qui -->
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <strong>Macchina Accesa:</strong>
+                <span v-if="plc1.acceso === true" class="text-success">Acceso</span>
+                <span v-if="plc1.acceso === false" class="text-danger">Spento</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <strong>Blocco Macchina:</strong>
+                <span v-if="plc1.blocco === true" class="text-danger">In Blocoo</span>
+                <span v-if="plc1.blocco === false" class="text-success">Regolare</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <strong>Macchina a regime:</strong>
+                <span v-if="plc1.regime === true" class="text-success">A Regime</span>
+                <span v-if="plc1.regime === false" class="text-warning">Non A Regime</span>
               </li>
             </ul>
           </div>
@@ -58,98 +138,34 @@ const alarms = ref([
         <div class="card shadow-sm h-100">
           <div class="card-header p-0">
             <!-- Navigazione Tab -->
-            <ul class="nav nav-tabs card-header-tabs" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link"
-                   :class="{ active: activeTab === 'alarmi' }"
-                   @click.prevent="activeTab = 'alarmi'"
-                   id="alarmi-tab" data-bs-toggle="tab" href="#alarmi" role="tab" aria-controls="alarmi" aria-selected="true">
-                  Allarmi ({{ alarms.length }})
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link"
-                   :class="{ active: activeTab === 'warning' }"
-                   @click.prevent="activeTab = 'warning'"
-                   id="warning-tab" data-bs-toggle="tab" href="#warning" role="tab" aria-controls="warning" aria-selected="false">
-                  Warning
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link"
-                   :class="{ active: activeTab === 'contatori' }"
-                   @click.prevent="activeTab = 'contatori'"
-                   id="contatori-tab" data-bs-toggle="tab" href="#contatori" role="tab" aria-controls="contatori" aria-selected="false">
-                  Contatori
-                </a>
-              </li>
-            </ul>
+            <ul class="nav nav-pills mb-3" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="contatori-tab" data-bs-toggle="pill" data-bs-target="#contatori" type="button" role="tab" aria-controls="contatori" aria-selected="true">Contatori</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="warning-tab" data-bs-toggle="pill" data-bs-target="#warning" type="button" role="tab" aria-controls="warning" aria-selected="false">Warning</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="allarm-tab" data-bs-toggle="pill" data-bs-target="#allarm" type="button" role="tab" aria-controls="allarm" aria-selected="false">Contact</button>
+  </li>
+</ul>
           </div>
-
-          <!-- Contenuto dei Tab -->
-          <div class="card-body tab-content p-4">
-
-            <!-- Tab Allarmi -->
-            <div class="tab-pane fade"
-                 :class="{ 'show active': activeTab === 'alarmi' }"
-                 id="alarmi" role="tabpanel" aria-labelledby="alarmi-tab">
-
-              <!-- INIZIO CODICE AGGIUNTO: Tabella Allarmi -->
-              <h5 class="mb-3">Lista Allarmi Attivi</h5>
-              <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                  <thead class="table-dark">
-                    <tr>
-                      <th>ID</th>
-                      <th>Timestamp</th>
-                      <th>Descrizione</th>
-                      <th>Severità</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <!-- Iterazione sui dati 'alarms' -->
-                    <tr v-for="alarm in alarms" :key="alarm.id" :class="{'table-danger': alarm.severity === 'Critico'}">
-                      <td>{{ alarm.id }}</td>
-                      <td>{{ alarm.timestamp }}</td>
-                      <td>{{ alarm.description }}</td>
-                      <td>
-                        <!-- Badge colorato per la severità -->
-                        <span :class="['badge', {
-                            'bg-danger': alarm.severity === 'Critico',
-                            'bg-warning text-dark': alarm.severity === 'Grave',
-                            'bg-info': alarm.severity === 'Basso',
-                        }]">
-                          {{ alarm.severity }}
-                        </span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!-- FINE CODICE AGGIUNTO -->
-            </div>
-
-            <!-- Tab Warning -->
-            <div class="tab-pane fade"
-                 :class="{ 'show active': activeTab === 'warning' }"
-                 id="warning" role="tabpanel" aria-labelledby="warning-tab">
-              <p>Contenuto della scheda Warning (ancora vuoto).</p>
-            </div>
-
-            <!-- Tab Contatori -->
-            <div class="tab-pane fade"
-                 :class="{ 'show active': activeTab === 'contatori' }"
-                 id="contatori" role="tabpanel" aria-labelledby="contatori-tab">
-              <p>Contenuto della scheda Contatori (ancora vuoto).</p>
-            </div>
-
-          </div>
+          <div class="tab-content" >
+  <div class="tab-pane fade show active" id="contatori" role="tabpanel" aria-labelledby="contatori-tab" tabindex="0">
+    <ContatorePlc></ContatorePlc>
+  </div>
+  <div class="tab-pane fade" id="warning" role="tabpanel" aria-labelledby="warning-tab" tabindex="0">
+    <WarningPlc></WarningPlc>
+  </div>
+  <div class="tab-pane fade" id="allarm" role="tabpanel" aria-labelledby="allarm-tab" tabindex="0">...</div>
+</div>
         </div>
       </div>
     </div>
   </div>
   <StatistichePlc></StatistichePlc>
 </template>
+
 
 <style scoped>
 .container {

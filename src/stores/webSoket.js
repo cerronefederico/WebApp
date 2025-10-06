@@ -1,5 +1,3 @@
-// src/stores/websocketStore.js
-
 import { defineStore } from 'pinia';
 import { allPlcStoresHooks } from './index';
 

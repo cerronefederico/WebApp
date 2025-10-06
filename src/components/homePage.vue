@@ -85,7 +85,7 @@ const totalOnline = computed(() => {
 .header-center {
   flex-grow: 1;
   text-align: center;
-  paddind: 0 0.5rem;
+  padding: 0 0.5rem;
   min-width: 0;
 }
 .main-content-area{

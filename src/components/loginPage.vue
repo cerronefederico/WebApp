@@ -6,7 +6,7 @@ import LoginText from "@/components/loginText.vue";
   <div class="container-fluid vh-100 d-flex justify-content-center align-items-center"
        style="background-color: #F8F8F8; padding: 0;">
 
-    <div class="shadow-lg overflow-hidden"
+    <div class="shadow-lg overflow-hidden animate__animated animate__fadeInDown animate__fast"
          style="width: 1200px; height: 750px; background-color: #FFFFFF; border-radius: 10px;">
 
         <div class="row w-100 h-100 g-0 justify-content-evenly">

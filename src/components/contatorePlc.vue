@@ -7,7 +7,7 @@
       <div class="col-12 col-md-6">
         <div class="card bg-primary text-white shadow">
           <div class="card-body">
-            <h5 class="card-title">Contatore Totale</h5>
+            <h5 class="card-title">Produzione Totale</h5>
             <p class="card-text fs-1 fw-bold">{{ plc1.getContatori.contatorepezzitotale}}</p>
           </div>
         </div>
@@ -16,7 +16,7 @@
       <div class="col-12 col-md-6">
         <div class="card bg-info text-white shadow">
           <div class="card-body">
-            <h5 class="card-title">Contatore Parziale</h5>
+            <h5 class="card-title">Produzione Parziale</h5>
             <p class="card-text fs-1 fw-bold">{{ plc1.getContatori.contatorepezziparziale}}</p>
           </div>
         </div>
@@ -116,7 +116,7 @@ const gaugeOptions = {
             stops: [0, 100]
         }
     },
-    labels: ['Velocità'],
+    labels: ['Pezzi al Minuto'],
 };
 
 // 2. COLONNA CON MARCATORE (BAR: Temperatura CPU)

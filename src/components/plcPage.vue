@@ -115,12 +115,12 @@ const plcData = ref({
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 <strong>Macchina Accesa:</strong>
-                <span v-if="plc1.getStati.acceso === true" class="text-success">Acceso</span>
-                <span v-if="plc1.getStati.acceso === false" class="text-danger">Spento</span>
+                <span v-if="plc1.getStati.acceso === true" class="text-success">Accesa</span>
+                <span v-if="plc1.getStati.acceso === false" class="text-danger">Spenta</span>
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 <strong>Blocco Macchina:</strong>
-                <span v-if="plc1.getStati.blocco === true" class="text-danger">In Blocoo</span>
+                <span v-if="plc1.getStati.blocco === true" class="text-danger">In Blocco</span>
                 <span v-if="plc1.getStati.blocco === false" class="text-success">Regolare</span>
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">

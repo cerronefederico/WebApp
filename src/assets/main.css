@@ -1,34 +1,67 @@
 @import './base.css';
 
+/* ---------------- Stili per il contenitore radice di Vue ---------------- */
 #app {
   max-width: 1280px;
   margin: 0 auto;
   padding: 0;
-    display: block;
+  display: block;
   font-weight: normal;
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
+/* ---------------- TEMA CHIARO (Default) ---------------- */
+:root {
+    --color-background: #f4f7f9;
+    --color-background-secondary: #f8f9fa; /* Nuovo per elementi secondari */
+    --color-card-bg: #ffffff;
+    --color-text-primary: #343a40;
+    --color-border: #e0e0e0;
+    --color-accent: #007bff;
+    --color-accent-dark: #0056b3;
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
+/* ---------------- TEMA SCURO (Palette Grigi) ---------------- */
+/* Questa classe sarà applicata all'ID #app-container */
+.dark-mode {
+    --color-background: #2b2b2b;
+    --color-background-secondary: #3c3c3c;
+    --color-card-bg: #343434;
+    --color-text-primary: #f0f0f0;
+    --color-border: #555555;
+    --color-accent: #81c784;
+    --color-accent-dark: #66bb6a;
+}
+.dark-mode .text-muted {
+    color: #ffffff !important;
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: block;
-  }
+.dark-mode .form-control::placeholder {
+    color: #ffffff;
+    opacity: 0.8;
+}
+.dark-mode .form-control::-webkit-input-placeholder { color: #ffffff; opacity: 0.8; }
+.dark-mode .form-control::-moz-placeholder { color: #ffffff; opacity: 0.8; }
+.dark-mode .form-control:-ms-input-placeholder { color: #ffffff; opacity: 0.8; }
 
-  #app {
-    display: block;
-    padding: 0;
-  }
+body {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    transition: background-color 0.3s, color 0.3s;
+}
+.dark-bg {
+    background-color: #1a1a1a !important;
+}
+
+
+#app-container {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    min-height: 100vh;
+}
+
+
+.card {
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    transition: background-color 0.3s, border-color 0.3s;
 }

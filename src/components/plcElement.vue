@@ -21,9 +21,9 @@ function handlePLC1() {
 </script>
 
 <template>
-    <div class="mx-auto" style="max-width: 600px; width: 90%;">
+    <div class="mx-auto" style="max-width: 850px; width: 100%;">
         <div class="card h-100 shadow-lg mb-4">
-            <svg aria-label="Placeholder: Image cap" class="bd-placeholder-img card-img-top" height="280" preserveAspectRatio="xMidYMid slice" role="img" width="100%" xmlns="http://www.w3.org/2000/svg"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect><text x="50%" y="50%" fill="#dee2e6" dy=".3em">Image cap</text></svg>
+          <img src="C:\Users\Giovanni\PycharmProjects\WebApp\public\img\provaPlcCard.png" class="card-img-top" alt="Immagine PLC1" height="280">
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">PLC1</h5>
                 <p class="card-text flex-grow-1">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
@@ -47,7 +47,7 @@ function handlePLC1() {
             </div>
         </div>
         <div class="card h-100 shadow-lg mb-4">
-            <svg aria-label="Placeholder: Image cap" class="bd-placeholder-img card-img-top" height="280" preserveAspectRatio="xMidYMid slice" role="img" width="100%" xmlns="http://www.w3.org/2000/svg"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect><text x="50%" y="50%" fill="#dee2e6" dy=".3em">Image cap</text></svg>
+          <img src="C:\Users\Giovanni\PycharmProjects\WebApp\public\img\provaPlcCard1.png" class="card-img-top" alt="Immagine PLC1" height="280">
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">PLC2</h5>
                 <p class="card-text flex-grow-1">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
@@ -70,7 +70,7 @@ function handlePLC1() {
             </div>
         </div>
         <div class="card h-100 shadow-lg mb-4">
-            <svg aria-label="Placeholder: Image cap" class="bd-placeholder-img card-img-top" height="280" preserveAspectRatio="xMidYMid slice" role="img" width="100%" xmlns="http://www.w3.org/2000/svg"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect><text x="50%" y="50%" fill="#dee2e6" dy=".3em">Image cap</text></svg>
+          <img src="C:\Users\Giovanni\PycharmProjects\WebApp\public\img\provaPlcCard2.png" class="card-img-top" alt="Immagine PLC1" height="280">
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">PLC3</h5>
                 <p class="card-text flex-grow-1">This is a longer card with supporting text below as a natural lead-in to additional content.</p>

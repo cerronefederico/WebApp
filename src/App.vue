@@ -1,6 +1,7 @@
 <template>
   <main>
-    <router-view></router-view>
+    <div id="app-container">
+    <router-view></router-view> </div>
   </main>
 </template>
 <script setup lang="ts">

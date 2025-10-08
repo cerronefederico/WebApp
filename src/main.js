@@ -7,7 +7,7 @@ import router from './router'
 import { createPinia } from 'pinia';
 import { useWebSocketStore } from './stores/webSoket';
 import VueApexCharts from 'vue3-apexcharts';
-
+import 'animate.css/animate.min.css';
 
 import { createApp } from 'vue'
 import App from './App.vue'

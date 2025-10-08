@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginPage from "../components/loginPage.vue";
 import HomePage from "../components/homePage.vue";
 import plcPage from "@/components/plcPage.vue";
+import gestioneProfilo from "@/components/gestioneProfilo.vue";
 
 const routes = [
   {
@@ -19,6 +20,11 @@ const routes = [
     path: '/home/plc1',
     name: 'Plc1',
     component: plcPage
+  },
+  {
+      path:'/gestioneProfilo',
+      name: 'gestioneProfilo',
+      component: gestioneProfilo
   }
 ]
 

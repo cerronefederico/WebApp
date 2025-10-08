@@ -1,29 +1,11 @@
 <script setup>
 import { defineProps } from 'vue';
+import { usePlc1Store} from '@/stores/index';
+
+// Inizializza gli Store. Sono automaticamente reattivi.
+const plc1 = usePlc1Store();
 
 // 1. Definizione delle Props usando defineProps
-const props = defineProps({
-  // La lista di dati che proviene, ad esempio, dalla tua WebSocket Store
-  items: {
-    type: Array,
-    default: () => [
-      { id: 1, descrizione: 'Lettura sensore PLC 1', ora: '10:00:15' },
-      { id: 2, descrizione: 'Allarme temperatura alta', ora: '10:01:30' },
-      { id: 3, descrizione: 'Ciclo completato', ora: '10:02:45' },
-        { id: 3, descrizione: 'Ciclo completato', ora: '10:02:45' },
-        { id: 3, descrizione: 'Ciclo completato', ora: '10:02:45' },
-        { id: 3, descrizione: 'Ciclo completato', ora: '10:02:45' },
-        { id: 3, descrizione: 'Ciclo completato', ora: '10:02:45' },
-        { id: 3, descrizione: 'Ciclo completato', ora: '10:02:45' },
-        { id: 3, descrizione: 'Ciclo completato', ora: '10:02:45' },
-        { id: 3, descrizione: 'Ciclo completato', ora: '10:02:45' },
-        { id: 3, descrizione: 'Ciclo completato', ora: '10:02:45' },
-        { id: 3, descrizione: 'Ciclo completato', ora: '10:02:45' },
-        { id: 3, descrizione: 'Ciclo completato', ora: '10:02:45' },
-      // Aggiungere altri elementi per testare lo scroll
-    ]
-  }
-});
 
 </script>
 
@@ -43,13 +25,13 @@ const props = defineProps({
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in props.items" :key="item.id">
+          <tr v-for="item in plc1.getNotifiche" :key="item.id">
             <td>{{ item.id }}</td>
-            <td>{{ item.descrizione }}</td>
+            <td>{{ item.stato }}</td>
             <td>{{ item.ora }}</td>
           </tr>
 
-          <tr v-if="props.items.length === 0">
+          <tr v-if="plc1.getNotifiche.length === 0">
             <td colspan="3" class="text-center text-muted">Nessun elemento disponibile.</td>
           </tr>
         </tbody>

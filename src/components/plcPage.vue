@@ -22,16 +22,16 @@ onBeforeUnmount(() => {
 });
 const pallinoStyle = computed(() => {
     let backgroundColor = '#6c757d';
-    if (plc1.acceso === false) {
+    if (plc1.getStati.acceso === false) {
         backgroundColor = 'red';
     }
-    else if (plc1.acceso === true && plc1.blocco === true) {
+    else if (plc1.getStati.acceso === true && plc1.getStati.blocco === true) {
         backgroundColor = 'yellow';
     }
-    else if (plc1.acceso === true && plc1.blocco !== true && plc1.regime === true) {
+    else if (plc1.getStati.acceso === true && plc1.getStati.blocco !== true && plc1.getStati.regime === true) {
         backgroundColor = 'blue';
     }
-    else if (plc1.acceso === true && plc1.blocco !== true && plc1.regime !== true) {
+    else if (plc1.getStati.acceso === true && plc1.getStati.blocco !== true && plc1.getStati.regime !== true) {
         backgroundColor = 'green';
     }
     return {
@@ -115,18 +115,18 @@ const plcData = ref({
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 <strong>Macchina Accesa:</strong>
-                <span v-if="plc1.acceso === true" class="text-success">Acceso</span>
-                <span v-if="plc1.acceso === false" class="text-danger">Spento</span>
+                <span v-if="plc1.getStati.acceso === true" class="text-success">Acceso</span>
+                <span v-if="plc1.getStati.acceso === false" class="text-danger">Spento</span>
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 <strong>Blocco Macchina:</strong>
-                <span v-if="plc1.blocco === true" class="text-danger">In Blocoo</span>
-                <span v-if="plc1.blocco === false" class="text-success">Regolare</span>
+                <span v-if="plc1.getStati.blocco === true" class="text-danger">In Blocoo</span>
+                <span v-if="plc1.getStati.blocco === false" class="text-success">Regolare</span>
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 <strong>Macchina a regime:</strong>
-                <span v-if="plc1.regime === true" class="text-success">A Regime</span>
-                <span v-if="plc1.regime === false" class="text-warning">Non A Regime</span>
+                <span v-if="plc1.getStati.regime === true" class="text-success">A Regime</span>
+                <span v-if="plc1.getStati.regime === false" class="text-warning">Non A Regime</span>
               </li>
             </ul>
           </div>

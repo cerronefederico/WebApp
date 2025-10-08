@@ -40,68 +40,14 @@ export const useWebSocketStore = defineStore('websocketConnection', {
             if (allPlcStoresHooks[plcId]) {
                 const useStoreHook = allPlcStoresHooks[plcId];
                 const plcStore = useStoreHook();
-                if (allPlcData[plcId].acceso !== undefined) {
-                    plcStore.setAcceso(allPlcData[plcId].acceso);
+                if (allPlcData[plcId].stati !== undefined) {
+                    plcStore.setStati(allPlcData[plcId].stati);
                 }
-                if (allPlcData[plcId].blocco !== undefined) {
-                    plcStore.setBlocco(allPlcData[plcId].blocco);
+                if (allPlcData[plcId].contatori !== undefined) {
+                    plcStore.setContatori(allPlcData[plcId].contatori);
                 }
-                if (allPlcData[plcId].regime !== undefined) {
-                    plcStore.setRegime(allPlcData[plcId].regime);
-                }
-                if (allPlcData[plcId].wTermico !== undefined) {
-                    plcStore.setWTermico(allPlcData[plcId].wTermico);
-                }
-                if (allPlcData[plcId].wAnomaliaNastro !== undefined) {
-                    plcStore.setWAnomaliaNastro(allPlcData[plcId].wAnomaliaNastro);
-                }
-                if (allPlcData[plcId].wMancanzaProdotto !== undefined) {
-                    plcStore.setWMancanzaProdotto(allPlcData[plcId].wMancanzaProdotto);
-                }
-                if (allPlcData[plcId].wPieno !== undefined) {
-                    plcStore.setWPieno(allPlcData[plcId].wPieno);
-                }
-                if (allPlcData[plcId].wPortelloneAperto !== undefined) {
-                    plcStore.setWPortelloneAperto(allPlcData[plcId].wPortelloneAperto);
-                }
-                if (allPlcData[plcId].aAnomaliaGenerica !== undefined) {
-                    plcStore.setAAnomaliaGenerica(allPlcData[plcId].aAnomaliaGenerica);
-                }
-                if (allPlcData[plcId].aMotoreNastro !== undefined) {
-                    plcStore.setAMotoreNastro(allPlcData[plcId].aMotoreNastro);
-                }
-                if (allPlcData[plcId].aMancanzaConsenso !== undefined) {
-                    plcStore.setAMancanzaConsenso(allPlcData[plcId].aMancanzaConsenso);
-                }
-                if (allPlcData[plcId].aTemperaturaProdottoAlta !== undefined) {
-                    plcStore.setATemperaturaProdottoAlta(allPlcData[plcId].aTemperaturaProdottoAlta);
-                }
-                if (allPlcData[plcId].aEmergenzaInserita !== undefined) {
-                    plcStore.setAEmergenzaInserita(allPlcData[plcId].aEmergenzaInserita);
-                }
-                if (allPlcData[plcId].aTemperaturaCpuElevata !== undefined) {
-                    plcStore.setATemperaturaCpuElevata(allPlcData[plcId].aTemperaturaCpuElevata);
-                }
-                if (allPlcData[plcId].aAggraffatriceSpenta !== undefined) {
-                    plcStore.setAAggraffatriceSpenta(allPlcData[plcId].aAggraffatriceSpenta);
-                }
-                if (allPlcData[plcId].aNastroSpento !== undefined) {
-                    plcStore.setANastroSpento(allPlcData[plcId].aNastroSpento);
-                }
-                if (allPlcData[plcId].contatorePezziTotale !== undefined) {
-                    plcStore.setContatorePezziTotale(allPlcData[plcId].contatorePezziTotale);
-                }
-                if (allPlcData[plcId].contatorePezziParziale !== undefined) {
-                    plcStore.setContatorePezziParziale(allPlcData[plcId].contatorePezziParziale);
-                }
-                if (allPlcData[plcId].contatorePezziParzialeBackup !== undefined) {
-                    plcStore.setContatorePezziParzialeBackup(allPlcData[plcId].contatorePezziParzialeBackup);
-                }
-                if (allPlcData[plcId].velocitaProduzionePezziMinuto !== undefined) {
-                    plcStore.setVelocitaProduzionePezziMinuto(allPlcData[plcId].velocitaProduzionePezziMinuto);
-                }
-                if (allPlcData[plcId].temperaturaCpu !== undefined) {
-                    plcStore.setTemperaturaCpu(allPlcData[plcId].temperaturaCpu);
+                if (allPlcData[plcId].notifiche !== undefined) {
+                    plcStore.setNotifiche(allPlcData[plcId].notifiche);
                 }
             }
         }

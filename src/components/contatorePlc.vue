@@ -8,7 +8,7 @@
         <div class="card bg-primary text-white shadow">
           <div class="card-body">
             <h5 class="card-title">Contatore Totale</h5>
-            <p class="card-text fs-1 fw-bold">{{ plc1.getContatorePezziTotale }}</p>
+            <p class="card-text fs-1 fw-bold">{{ plc1.getContatori.contatorepezzitotale}}</p>
           </div>
         </div>
       </div>
@@ -17,7 +17,7 @@
         <div class="card bg-info text-white shadow">
           <div class="card-body">
             <h5 class="card-title">Contatore Parziale</h5>
-            <p class="card-text fs-1 fw-bold">{{ plc1.getContatorePezziParziale }}</p>
+            <p class="card-text fs-1 fw-bold">{{ plc1.getContatori.contatorepezziparziale}}</p>
           </div>
         </div>
       </div>
@@ -70,7 +70,7 @@ const plc1 = usePlc1Store();
 const MAX_VELOCITA = 800; // Definisci la tua costante massima qui
 
 const gaugeSeries = computed(() => {
-  const valoreCorrente = plc1.velocitaProduzionePezziMinuto || 0;
+  const valoreCorrente = plc1.getContatori.velocitaproduzionepezziminuto || 0;
   const percentuale = (valoreCorrente / MAX_VELOCITA) * 100;
   return [Math.min(percentuale, 100)];
 });
@@ -125,7 +125,7 @@ const columnSeries = computed(() => {
   // Assumo che plc1.temperaturaCpu contenga il valore.
   return [{
     name: 'Temperatura',
-    data: [plc1.temperaturaCpu || 0]
+    data: [plc1.getContatori.temperaturacpu || 0]
   }];
 });
 

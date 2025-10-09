@@ -15,9 +15,9 @@ const totalAlerts = computed(() => {return plc1.getNumeroAllarmi + plc2.getNumer
 const totalWarnings = computed(() => {return plc1.getNumeroWarning + plc2.getNumeroWarning + plc3.getNumeroWarning;});
 const totalOnline = computed(() => {
   let cont=0;
-  if(plc1.getAcceso){cont++;}
-  if(plc2.getAcceso){cont++;}
-  if(plc3.getAcceso){cont++;}
+  if(plc1.getStati[0].acceso){cont++;}
+  if(plc2.getStati[0].acceso){cont++;}
+  if(plc3.getStati[0].acceso){cont++;}
   return cont;
 });
 

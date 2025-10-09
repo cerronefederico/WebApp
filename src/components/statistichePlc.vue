@@ -1,8 +1,6 @@
 <template>
 <ul class="list-group">
-    <li class="list-group-item">{{plc1.getStati}}//{{plc1.getContatori}}</li>
-     <li class="list-group-item">{{plc2.getStati}}//{{plc2.getContatori}}</li>
-     <li class="list-group-item">{{plc3.getStati}}//{{plc3.getContatori}}</li>
+    <li class="list-group-item">{{plc1.getStati[0]}}//{{plc1.getContatori[0]}}</li>
     </ul>
 </template>
 

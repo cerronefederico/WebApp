@@ -22,16 +22,16 @@ onBeforeUnmount(() => {
 });
 const pallinoStyle = computed(() => {
     let backgroundColor = '#6c757d';
-    if (plc1.getStati.acceso === false) {
+    if (plc1.getStati[0].acceso === false) {
         backgroundColor = 'red';
     }
-    else if (plc1.getStati.acceso === true && plc1.getStati.blocco === true) {
+    else if (plc1.getStati[0].acceso === true && plc1.getStati[0].blocco === true) {
         backgroundColor = 'yellow';
     }
-    else if (plc1.getStati.acceso === true && plc1.getStati.blocco !== true && plc1.getStati.regime === true) {
+    else if (plc1.getStati[0].acceso === true && plc1.getStati[0].blocco !== true && plc1.getStati[0].regime === true) {
         backgroundColor = 'blue';
     }
-    else if (plc1.getStati.acceso === true && plc1.getStati.blocco !== true && plc1.getStati.regime !== true) {
+    else if (plc1.getStati[0].acceso === true && plc1.getStati[0].blocco !== true && plc1.getStati[0].regime !== true) {
         backgroundColor = 'green';
     }
     return {
@@ -69,7 +69,7 @@ const plcData = ref({
             <h4 class="card-title text-primary">PLC1</h4>
             <ul class="list-group list-group-flush text-start">
               <li class="list-group-item d-flex justify-content-between align-items-center">
-                <strong>Indirizzo IP:</strong>
+                <strong>Stato Macchina:</strong>
 
                  <span
       ref="pallinoElement"
@@ -110,23 +110,23 @@ const plcData = ref({
 
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
-                <strong>Stato Macchina:</strong>
+                <strong>Indirizzo IP:</strong>
                 <span>192.168.40.13</span>
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 <strong>Macchina Accesa:</strong>
-                <span v-if="plc1.getStati.acceso === true" class="text-success">Accesa</span>
-                <span v-if="plc1.getStati.acceso === false" class="text-danger">Spenta</span>
+                <span v-if="plc1.getStati[0].acceso === true" class="text-success">Accesa</span>
+                <span v-if="plc1.getStati[0].acceso === false" class="text-danger">Spenta</span>
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 <strong>Blocco Macchina:</strong>
-                <span v-if="plc1.getStati.blocco === true" class="text-danger">In Blocco</span>
-                <span v-if="plc1.getStati.blocco === false" class="text-success">Regolare</span>
+                <span  v-if="plc1.getStati[0].blocco === true" class="text-danger">In Blocco</span>
+                <span  v-if="plc1.getStati[0].blocco === false" class="text-success">Regolare</span>
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 <strong>Macchina a regime:</strong>
-                <span v-if="plc1.getStati.regime === true" class="text-success">A Regime</span>
-                <span v-if="plc1.getStati.regime === false" class="text-warning">Non A Regime</span>
+                <span  v-if="plc1.getStati[0].regime === true" class="text-success">A Regime</span>
+                <span  v-if="plc1.getStati[0].regime === false" class="text-warning">Non A Regime</span>
               </li>
             </ul>
           </div>
@@ -155,7 +155,7 @@ const plcData = ref({
     <ContatorePlc></ContatorePlc>
   </div>
   <div class="tab-pane fade" id="warning" role="tabpanel" aria-labelledby="warning-tab" tabindex="0">
-    <WarningPlc></WarningPlc>
+
   </div>
   <div class="tab-pane fade" id="allarm" role="tabpanel" aria-labelledby="allarm-tab" tabindex="0">...</div>
 </div>

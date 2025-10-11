@@ -23,7 +23,7 @@ function handlePLC1() {
 <template>
     <div class="mx-auto" style="max-width: 850px; width: 100%;">
         <div class="card h-100 shadow-lg mb-4">
-          <img class="card-img-top" alt="Immagine PLC1" height="280">
+          <img src="/img/provaPlcCard.png"  class="card-img-top" alt="Immagine PLC1" height="280">
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">PLC1</h5>
                 <p class="card-text flex-grow-1">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
@@ -47,7 +47,7 @@ function handlePLC1() {
             </div>
         </div>
         <div class="card h-100 shadow-lg mb-4">
-          <img  class="card-img-top" alt="Immagine PLC1" height="280">
+          <img src="/img/provaPlcCard1.png" class="card-img-top" alt="Immagine PLC1" height="280">
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">PLC2</h5>
                 <p class="card-text flex-grow-1">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
@@ -70,7 +70,7 @@ function handlePLC1() {
             </div>
         </div>
         <div class="card h-100 shadow-lg mb-4">
-          <img  class="card-img-top" alt="Immagine PLC1" height="280">
+          <img src="/img/provaPlcCard2.png" class="card-img-top" alt="Immagine PLC1" height="280">
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">PLC3</h5>
                 <p class="card-text flex-grow-1">This is a longer card with supporting text below as a natural lead-in to additional content.</p>

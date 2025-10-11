@@ -4,6 +4,7 @@
     <div class="d-flex flex-column align-items-center" style="max-width: 400px; width: 100%">
 
       <div class="text-center mb-5" style="margin-bottom: 30px">
+        <img src="/img/logoApplicazione.png" alt="Logo Applicazione" class="logo-login">
       </div>
 
       <div

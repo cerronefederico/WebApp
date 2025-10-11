@@ -5,6 +5,7 @@ import StatistichePlc from "@/components/statistichePlc.vue";
 import ContatorePlc from "@/components/contatorePlc.vue";
 import { usePlc1Store} from '@/stores/index';
 import WarningPlc from "@/components/warningPlc.vue";
+import AllarmPlc from "@/components/allarmPlc.vue";
 
 const pallinoElement = ref(null);
 let popoverInstance = null;
@@ -146,7 +147,7 @@ const plcData = ref({
     <button class="nav-link" id="warning-tab" data-bs-toggle="pill" data-bs-target="#warning" type="button" role="tab" aria-controls="warning" aria-selected="false">Warning</button>
   </li>
   <li class="nav-item" role="presentation">
-    <button class="nav-link" id="allarm-tab" data-bs-toggle="pill" data-bs-target="#allarm" type="button" role="tab" aria-controls="allarm" aria-selected="false">Contact</button>
+    <button class="nav-link" id="allarm-tab" data-bs-toggle="pill" data-bs-target="#allarm" type="button" role="tab" aria-controls="allarm" aria-selected="false">Allarm</button>
   </li>
 </ul>
           </div>
@@ -155,9 +156,11 @@ const plcData = ref({
     <ContatorePlc></ContatorePlc>
   </div>
   <div class="tab-pane fade" id="warning" role="tabpanel" aria-labelledby="warning-tab" tabindex="0">
-
+    <WarningPlc></WarningPlc>
   </div>
-  <div class="tab-pane fade" id="allarm" role="tabpanel" aria-labelledby="allarm-tab" tabindex="0">...</div>
+  <div class="tab-pane fade" id="allarm" role="tabpanel" aria-labelledby="allarm-tab" tabindex="0">
+    <AllarmPlc></AllarmPlc>
+  </div>
 </div>
         </div>
       </div>

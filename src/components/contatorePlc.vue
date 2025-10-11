@@ -1,6 +1,12 @@
 <template>
   <div class="container my-4">
+    <div class="hstack gap-3">
+  <div class="p-2">
     <h1 class="mb-4">Dashboard Dati PLC (PLC1)</h1>
+  </div>
+  <div class="ms-auto">Ultimo Aggiornamento: {{formattedLastUpdate}}</div>
+  </div>
+
 
     <div class="row g-4">
 
@@ -65,6 +71,31 @@ import { usePlc1Store} from '@/stores/index';
 
 // Inizializza gli Store. Sono automaticamente reattivi.
 const plc1 = usePlc1Store();
+const formattedLastUpdate = computed(() => {
+    const oraCompleta = plc1.getContatori[0]?.ora;
+
+    // Controlla se il dato esiste
+    if (!oraCompleta || typeof oraCompleta !== 'string') {
+        return 'N/A';
+    }
+
+    // Trova l'indice del punto decimale
+    const puntoIndex = oraCompleta.indexOf('.');
+
+    if (puntoIndex !== -1) {
+        // Tronca la stringa fino al punto e sostituisci lo spazio con T (formato pulito)
+        // Risultato: "2025-10-10 21:00:03"
+        return oraCompleta.substring(0, puntoIndex).replace('T', ' ');
+    }
+
+    // Se non ci sono millisecondi, rimuovi solo il fuso orario se presente
+    const plusIndex = oraCompleta.indexOf('+');
+    if (plusIndex !== -1) {
+        return oraCompleta.substring(0, plusIndex).replace('T', ' ');
+    }
+
+    return oraCompleta.replace('T', ' '); // Ritorna la stringa originale se non c'è fuso orario
+});
 
 // --- Logica dei Grafici (Dati Reattivi) ---
 const MAX_VELOCITA = 800; // Definisci la tua costante massima qui

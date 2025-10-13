@@ -4,6 +4,7 @@ import LoginPage from "../components/loginPage.vue";
 import HomePage from "../components/homePage.vue";
 import plcPage from "@/components/plcPage.vue";
 import gestioneProfilo from "@/components/gestioneProfilo.vue";
+import allarmPage from "@/components/allarmPage.vue";
 
 const routes = [
   {
@@ -25,6 +26,11 @@ const routes = [
       path:'/gestioneProfilo',
       name: 'gestioneProfilo',
       component: gestioneProfilo
+  },
+    {
+      path:'/alarms',
+      name: 'AllarmPage',
+      component: allarmPage
   }
 ]
 

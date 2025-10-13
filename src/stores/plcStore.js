@@ -48,7 +48,17 @@ export const createPlcStore = (plcId) => {
                 if (state.stati[0].wpieno) { count++; }
                 if (state.stati[0].wportelloneaperto) { count++; }
                 return count;
-            }
+            },
+            getNotificaAllarmi: (state) => {
+                return state.notifiche.filter((e) => {
+                    return e.id.startsWith("a");
+                })
+            },
+            getNotificaWarning: (state) => {
+                return state.notifiche.filter((e) => {
+                    return e.id.startsWith("w");
+                })
+            },
         }
     });
 };

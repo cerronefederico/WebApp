@@ -93,7 +93,7 @@ let maxTotalValue = 0;
     }
 });
 
-const dynamicMax = maxTotalValue + 1000;
+const dynamicMax = maxTotalValue;
 
 // 🚀 NUOVA LOGICA: Ordina le serie per valore massimo decrescente per evitare sovrapposizioni
 const rawSeries = [
@@ -112,7 +112,7 @@ const series = ref(orderedSeries.map(s => ({ name: s.name, data: s.data })));
 const chartOptions = ref({
     chart: {
         type: 'area',
-        height: 450,
+        height: 400,
         stacked: false, // Lasciato a false per aree sovrapposte ma distinte
         toolbar: {
             show: true
@@ -163,7 +163,7 @@ const chartOptions = ref({
   <div class="area-chart-container">
     <VueApexCharts
         type="area"
-        height="450"
+        height="400"
         :options="chartOptions"
         :series="series"
     />

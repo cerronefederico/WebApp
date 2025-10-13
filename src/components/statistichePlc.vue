@@ -1,6 +1,7 @@
 <template>
 <ul class="list-group">
     <li class="list-group-item">{{plc1.getStati[0]}}//{{plc1.getContatori[0]}}</li>
+  <li v-for="item in plc1.getNotifiche" class="list-group-item">{{item.id}}</li>
     </ul>
 </template>
 

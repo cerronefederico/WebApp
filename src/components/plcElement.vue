@@ -1,95 +1,67 @@
 <script setup>
-import { usePlc1Store, usePlc2Store, usePlc3Store } from '@/stores/index';
-import { useWebSocketStore } from '@/stores/webSoket';
-import { computed, ref } from 'vue'; // Importiamo i componenti necessari
-import { useRouter } from 'vue-router'; // Per usare il router
-
-// 1. Hook degli Store
-const plc1 = usePlc1Store();
-const plc2 = usePlc2Store();
-const plc3 = usePlc3Store();
-
-
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-function handlePLC1() {
-    router.push('/home/plc1');
+// 1. Definiamo la prop per ricevere l'array di PLC filtrati dal componente padre
+defineProps({
+    plcs: {
+        type: Array,
+        required: true
+    }
+});
+
+// 2. Funzione per la navigazione dinamica
+function navigateTo(route) {
+    if (route) {
+        // Usa router.push per navigare alla route specifica del PLC
+        router.push(route);
+    }
 }
-
-
 </script>
 
 <template>
     <div class="mx-auto" style="max-width: 850px; width: 100%;">
-        <div class="card h-100 shadow-lg mb-4">
-          <img src="/img/provaPlcCard.png"  class="card-img-top" alt="Immagine PLC1" height="280">
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title">PLC1</h5>
-                <p class="card-text flex-grow-1">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                <div class="status-row d-flex justify-content-between align-items-center mt-2">
-
-                    <div class="status-indicators d-flex gap-3">
-
-                        <span class="text-danger">
-                            <i class="bi bi-x-octagon-fill"></i> Alert: {{plc1.getNumeroAllarmi}}
-                        </span>
-
-                        <span class="text-warning">
-                            <i class="bi bi-exclamation-triangle-fill"></i> Warning: {{plc1.getNumeroWarning}}
-                        </span>
-
-                    </div>
-                </div>
-                <form @submit.prevent="handlePLC1" class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary mt-2 ms-auto">Visualizza</button>
-                </form>
-            </div>
+        <div v-if="plcs.length === 0" class="alert alert-info text-center shadow-lg" role="alert">
+            Nessun PLC trovato con il filtro selezionato. Riprova con un altro filtro.
         </div>
-        <div class="card h-100 shadow-lg mb-4">
-          <img src="/img/provaPlcCard1.png" class="card-img-top" alt="Immagine PLC1" height="280">
+
+        <div v-for="plc in plcs" :key="plc.id" class="card h-100 shadow-lg mb-4">
+            <img :src="plc.image" class="card-img-top" :alt="`Immagine ${plc.id}`" height="280">
             <div class="card-body d-flex flex-column">
-                <h5 class="card-title">PLC2</h5>
-                <p class="card-text flex-grow-1">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-
-                <div class="status-row d-flex justify-content-between align-items-center mt-2">
-
-                    <div class="status-indicators d-flex gap-3">
-
-                        <span class="text-danger">
-                            <i class="bi bi-x-octagon-fill"></i> Alert: {{plc2.getNumeroAllarmi}}
-                        </span>
-
-                        <span class="text-warning">
-                            <i class="bi bi-exclamation-triangle-fill"></i> Warning: {{plc2.getNumeroWarning}}
-                        </span>
-
-                    </div>
-                </div>
-                <button type="button" class="btn btn-primary mt-2 ms-auto">Visualizza</button>
-            </div>
-        </div>
-        <div class="card h-100 shadow-lg mb-4">
-          <img src="/img/provaPlcCard2.png" class="card-img-top" alt="Immagine PLC1" height="280">
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title">PLC3</h5>
+                <h5 class="card-title">{{ plc.id }}</h5>
                 <p class="card-text flex-grow-1">This is a longer card with supporting text below as a natural lead-in to additional content.</p>
 
                 <div class="status-row d-flex justify-content-between align-items-center mt-2">
-
                     <div class="status-indicators d-flex gap-3">
 
                         <span class="text-danger">
-                            <i class="bi bi-x-octagon-fill"></i> Alert: {{plc3.getNumeroAllarmi}}
+                            <i class="bi bi-x-octagon-fill"></i> Alert: {{plc.store.getNumeroAllarmi}}
                         </span>
 
                         <span class="text-warning">
-                            <i class="bi bi-exclamation-triangle-fill"></i> Warning: {{plc3.getNumeroWarning}}
+                            <i class="bi bi-exclamation-triangle-fill"></i> Warning: {{plc.store.getNumeroWarning}}
+                        </span>
+
+                        <span :class="[!plc.stato.acceso ? 'text-secondary' : !plc.stato.inBlocco ? 'text-success' : 'text-danger fw-bold']">
+                            <i :class="[!plc.stato.acceso ? 'bi bi-outlet' : !plc.stato.inBlocco ? 'bi bi-power' : 'bi bi-lock-fill']"></i>
+
+                            Stato:
+                            <template v-if="plc.stato.acceso && plc.stato.inBlocco">BLOCCO</template>
+                            <template v-else-if="plc.stato.acceso && !plc.stato.inBlocco">ACCESO</template>
+                            <template v-else-if="!plc.stato.acceso">SPENTO</template>
+                            <template v-else>Sconosciuto</template>
                         </span>
 
                     </div>
                 </div>
-                <button type="button" class="btn btn-primary mt-2 ms-auto">Visualizza</button>
+                <button
+                    type="button"
+                    class="btn btn-primary mt-2 ms-auto"
+                    @click="navigateTo(plc.route)"
+                >
+                    Visualizza
+                </button>
             </div>
         </div>
     </div>

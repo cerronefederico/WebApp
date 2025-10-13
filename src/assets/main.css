@@ -1,67 +1,78 @@
-@import './base.css';
+/* =======================================================
+   IL TUO FILE CSS PRINCIPALE (MAIN CSS) - MODIFICATO
+   ======================================================= */
 
-/* ---------------- Stili per il contenitore radice di Vue ---------------- */
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0;
-  display: block;
-  font-weight: normal;
-}
-
-/* ---------------- TEMA CHIARO (Default) ---------------- */
 :root {
-    --color-background: #f4f7f9;
-    --color-background-secondary: #f8f9fa; /* Nuovo per elementi secondari */
-    --color-card-bg: #ffffff;
-    --color-text-primary: #343a40;
-    --color-border: #e0e0e0;
-    --color-accent: #007bff;
-    --color-accent-dark: #0056b3;
+  /* 🎨 PALETTE GLOBALE BASATA SU #2596BE (rgba(37, 150, 190)) */
+  --color-primary: #17223b;      /* Header, Titoli, Branding */
+  --color-accent-cta: #17223b;  /* Arancione brillante (CTA) */
+  --color-secondary: #004F70;   /* Blu Scuro Profondo (per hover, elementi secondari) */
+
+  --color-background: #F0F8FF; /* Sfondo generale azzurrognolo chiaro */
+  --color-card-bg: #FFFFFF;    /* Sfondo elementi (Sidebar, Card) */
+  --color-text-dark: #212529; /* Testo principale quasi nero */
+  --color-border: #B8DCE9;  /* Bordo molto chiaro (basato sul primario) */
+  --color-text-muted: #6c757d;
+
+  /* 🟢 COLRI DI STATO (Bootstrap - armonizzati) */
+  --bs-success: #388E3C; /* Verde Scuro leggibile (ON/OK) */
+  --bs-danger: #D32F2F;  /* Rosso leggibile (ALLARME/OFF) */
+  --bs-warning: #FFC107; /* Giallo (WARNING/Attenzione) */
 }
 
-/* ---------------- TEMA SCURO (Palette Grigi) ---------------- */
-/* Questa classe sarà applicata all'ID #app-container */
-.dark-mode {
-    --color-background: #2b2b2b;
-    --color-background-secondary: #3c3c3c;
-    --color-card-bg: #343434;
-    --color-text-primary: #f0f0f0;
-    --color-border: #555555;
-    --color-accent: #81c784;
-    --color-accent-dark: #66bb6a;
-}
-.dark-mode .text-muted {
-    color: #ffffff !important;
-}
-
-.dark-mode .form-control::placeholder {
-    color: #ffffff;
-    opacity: 0.8;
-}
-.dark-mode .form-control::-webkit-input-placeholder { color: #ffffff; opacity: 0.8; }
-.dark-mode .form-control::-moz-placeholder { color: #ffffff; opacity: 0.8; }
-.dark-mode .form-control:-ms-input-placeholder { color: #ffffff; opacity: 0.8; }
-
+/* <body> STILI BASE */
 body {
     background-color: var(--color-background);
-    color: var(--color-text-primary);
-    transition: background-color 0.3s, color 0.3s;
-}
-.dark-bg {
-    background-color: #1a1a1a !important;
+    color: var(--color-text-dark);
 }
 
-
-#app-container {
-    background-color: var(--color-background);
-    color: var(--color-text-primary);
-    min-height: 100vh;
+/* =======================================================
+   HEADER/NAVBAR (Regola Specifica per Sovrascrittura)
+   ======================================================= */
+/* Questa regola è stata aggiunta/rafforzata per assicurare che
+   il colore primario venga applicato alla barra di navigazione */
+.app-header-fixed {
+  background-color: var(--color-primary) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 
-.card {
-    background-color: var(--color-card-bg);
+/* =======================================================
+   ELEMENTI UI GLOBALI (Potenziale sovrascrittura di Bootstrap)
+   ======================================================= */
+
+/* CTA Principale (Arancione) */
+.btn-primary {
+    background-color: var(--color-accent-cta) !important;
+    border-color: var(--color-accent-cta) !important;
+    color: white !important;
+    font-weight: bold;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.btn-primary:hover {
+    background-color: #004f70 !important;
+    border-color: #004f70 !important;
+}
+
+/* Bottoni di ricerca nell'header (Bianco su sfondo scuro) */
+.app-header-fixed .search-btn,
+.app-header-fixed .btn-outline-dark {
+    color: white !important;
+    border-color: white !important;
+    background: transparent !important;
+}
+.app-header-fixed .search-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Sidebar e Card (sfondo e bordi) */
+.sidebar-left, .sidebar-right {
     border: 1px solid var(--color-border);
-    transition: background-color 0.3s, border-color 0.3s;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Select (Dropdown) */
+.form-select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 0.25rem rgba(37, 150, 190, 0.25);
 }

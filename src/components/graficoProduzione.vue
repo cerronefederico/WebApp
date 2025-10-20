@@ -106,17 +106,7 @@ const rawSeries = [
 // La serie con il valore più basso verrà disegnata per ultima (sopra le altre)
 const orderedSeries = rawSeries.sort((a, b) => b.originalMax - a.originalMax);
 
-const series = computed(() => {
-
-    // Controlla che alignedData.value esista e non sia vuoto
-    if (!alignedData.value || alignedData.value.PLC1.length === 0) {
-        return [];
-    }
-
-
-    return orderedSeries.map(s => ({ name: s.name, data: s.data }));
-});
-
+const series = ref(orderedSeries.map(s => ({ name: s.name, data: s.data })));
 
 
 const chartOptions = ref({

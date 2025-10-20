@@ -80,16 +80,18 @@ const webSocketStore = useWebSocketStore();
   z-index: 1040; /* Mantenuto il z-index corretto */
 }
 
-/* ----------------------------------------------------------------- */
-/* CORREZIONE Z-INDEX DEL BACKDROP (Overlay scuro del Menu) */
-/* ----------------------------------------------------------------- */
-/* Applichiamo lo z-index del backdrop qui per assicurarci che sia sopra l'header,
-   ma sotto il pannello del menu. */
-:global(.offcanvas-backdrop) {
-    z-index: 1050 !important; /* Standard di Bootstrap per il backdrop */
+/* Modifica il blocco centrale per non avere 'flex-grow: 1' e usare 'margin: auto' */
+.header-center {
+  text-align: center;
+  /* Utilizziamo i margini automatici per centrare il blocco del logo */
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 0.5rem;
+  min-width: 0;
 }
 
 
+/* Usiamo 'visibility: hidden' per il blocco che deve bilanciare */
 .header-left {
   flex-shrink: 0;
   display: flex;
@@ -109,19 +111,9 @@ const webSocketStore = useWebSocketStore();
   justify-content: flex-end; /* Allinea gli elementi a destra all'interno del blocco */
 }
 
-
-.header-center {
-  text-align: center;
-  /* Utilizziamo i margini automatici per centrare il blocco del logo */
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 0.5rem;
-  min-width: 0;
-}
-
 /* NUOVO STILE: Assicura che l'area cliccabile del logo sia pulita */
 .logo-link {
-    text-decoration: none;
+    text-decoration: none; /* Rimuove la sottolineatura tipica dei link */
     cursor: pointer;
     display: inline-block;
     padding: 0;
@@ -148,9 +140,9 @@ const webSocketStore = useWebSocketStore();
 }
 
 .btn-search-header:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.1); /* Leggero sfondo all'hover */
     color: white;
-    border-color: #f0f0f0;
+    border-color: #f0f0f0; /* Bordo leggermente piÃ¹ chiaro all'hover */
 }
 
 .app-content-wrapper {

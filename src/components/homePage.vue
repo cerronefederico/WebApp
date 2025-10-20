@@ -174,38 +174,53 @@ const formattedTime = computed(() => {
         </div>
 
         <h3 class="sidebar-title mt-4">Ultimi Allarmi Rilevati</h3>
-      <div class="allarm-scroll-container">
-      <div class="text-center plc-list-title">PLC1</div>
-      <ul class="list-group">
-  <li v-for="item in ultimoAllarmPlc(plc1)" :key="item.id" class="list-group-item">
-    <div class="d-flex justify-content-between" :class="{ 'text-danger' : item.stato===true, 'text-success': item.stato===false}" >
-      <div> {{item.id}}</div>
-      <div>  {{formattedTime(item.ora)}}</div>
-    </div>
-  </li>
-        <li v-if="ultimoAllarmPlc(plc1).length === 0" class="list-group-item text-muted">Nessun Allarme Rilevato.</li>
-</ul>
-            <div class="text-center plc-list-title">PLC2</div>
-      <ul class="list-group">
-  <li v-for="item in ultimoAllarmPlc(plc2)" :key="item.id" class="list-group-item">
-    <div class="d-flex justify-content-between" :class="{ 'text-danger' : item.stato===true, 'text-success': item.stato===false}">
-      <div> {{item.id}}</div>
-      <div>  {{formattedTime(item.ora)}}</div>
-    </div>
-  </li>
-        <li v-if="ultimoAllarmPlc(plc2).length === 0" class="list-group-item text-muted">Nessun Allarme Rilevato.</li>
-</ul>
-            <div class="text-center plc-list-title">PLC3</div>
-      <ul class="list-group">
-  <li v-for="item in ultimoAllarmPlc(plc3)" :key="item.id" class="list-group-item">
-    <div class="d-flex justify-content-between" :class="{ 'text-danger' : item.stato===true, 'text-success': item.stato===false}">
-      <div> {{item.id}}</div>
-      <div>  {{formattedTime(item.ora)}}</div>
-    </div>
-  </li>
-        <li v-if="ultimoAllarmPlc(plc3).length === 0" class="list-group-item text-muted">Nessun Allarme Rilevato.</li>
-</ul>
-      </div>
+        <div class="allarm-scroll-container">
+
+            <div class="text-center plc-list-title custom-bg-primary">PLC1</div>
+            <ul class="list-group list-group-flush shadow-sm mb-3">
+                <li v-for="item in ultimoAllarmPlc(plc1)" :key="item.id" class="list-group-item">
+                    <div class="d-flex justify-content-between">
+                        <div :class="{ 'text-danger fw-bold' : item.stato===true, 'text-success': item.stato===false}" >
+                            {{item.id}}
+                        </div>
+                        <div class="text-secondary fw-medium">
+                            {{formattedTime(item.ora)}}
+                        </div>
+                    </div>
+                </li>
+                <li v-if="ultimoAllarmPlc(plc1).length === 0" class="list-group-item text-muted">Nessun Allarme Rilevato.</li>
+            </ul>
+
+            <div class="text-center plc-list-title custom-bg-primary">PLC2</div>
+            <ul class="list-group list-group-flush shadow-sm mb-3">
+                <li v-for="item in ultimoAllarmPlc(plc2)" :key="item.id" class="list-group-item">
+                    <div class="d-flex justify-content-between">
+                        <div :class="{ 'text-danger fw-bold' : item.stato===true, 'text-success': item.stato===false}">
+                            {{item.id}}
+                        </div>
+                        <div class="text-secondary fw-medium">
+                            {{formattedTime(item.ora)}}
+                        </div>
+                    </div>
+                </li>
+                <li v-if="ultimoAllarmPlc(plc2).length === 0" class="list-group-item text-muted">Nessun Allarme Rilevato.</li>
+            </ul>
+
+            <div class="text-center plc-list-title custom-bg-primary">PLC3</div>
+            <ul class="list-group list-group-flush shadow-sm mb-3">
+                <li v-for="item in ultimoAllarmPlc(plc3)" :key="item.id" class="list-group-item">
+                    <div class="d-flex justify-content-between">
+                        <div :class="{ 'text-danger fw-bold' : item.stato===true, 'text-success': item.stato===false}">
+                            {{item.id}}
+                        </div>
+                        <div class="text-secondary fw-medium">
+                            {{formattedTime(item.ora)}}
+                        </div>
+                    </div>
+                </li>
+                <li v-if="ultimoAllarmPlc(plc3).length === 0" class="list-group-item text-muted">Nessun Allarme Rilevato.</li>
+            </ul>
+        </div>
     </aside>
 
     <main class="main-content-area">
@@ -215,7 +230,7 @@ const formattedTime = computed(() => {
     <aside class="sidebar-right">
         <h3 class="sidebar-title">Strumenti</h3>
         <button class="btn btn-primary w-100 mb-2" data-bs-toggle="modal" data-bs-target="#allarmOnModal">Allarmi attivi</button>
-      <p class="small text-muted filter-label">Filtra le card PLC:</p>
+      <p class="sidebar-title">Filtra le card PLC:</p>
         <select class="form-select" v-model="selectedFilter">
             <option value="TUTTI">Mostra Tutti</option>
             <option value="ACCESE">Solo Accese</option>
@@ -233,82 +248,49 @@ const formattedTime = computed(() => {
 </template>
 
 <style scoped>
-/* Definisci le variabili di colore globali per coerenza */
+/* **************************************************
+ * VARIABILI GLOBALI E CUSTOM COLORI
+ * **************************************************/
 :root {
   /* Palette basata sul colore richiesto: #2596BE (rgba(37, 150, 190)) */
   --color-primary: #14265a;      /* Header, Titoli, Branding */
-  --color-accent-cta: #004f70;  /* Arancione brillante (CTA) */
+  --color-accent-cta: #004f70;  /* Blu Scuro per CTA (usato sui bottoni) */
   --color-secondary: #004F70;   /* Blu Scuro (per hover su elementi primari) */
 
   --color-background: #F0F8FF; /* Sfondo generale azzurrognolo chiaro */
   --color-card-bg: #FFFFFF;    /* Sfondo elementi (Sidebar, Card) */
   --color-text-dark: #212529; /* Testo principale quasi nero */
-  --color-border: #B8DCE9;  /* Bordo molto chiaro (basato sul primario) */
+  --color-border: #B8DCE9;  /* Bordo molto chiaro */
   --color-text-muted: #6c757d;
 
   /* Colori di Stato Standard (Bootstrap - armonizzati) */
-  --bs-success: #388E3C; /* Verde Scuro leggibile (ON/OK) */
-  --bs-danger: #D32F2F;  /* Rosso leggibile (ALLARME/OFF) */
-  --bs-warning: #FFC107; /* Giallo (WARNING/Attenzione) */
+  --bs-success: #388E3C;
+  --bs-danger: #D32F2F;
+  --bs-warning: #FFC107;
 }
 
-/* Sovrascrivi il background del body per l'area fuori dal layout se necessario (non nel template) */
-body {
-    background-color: var(--color-background);
-    color: var(--color-text-dark);
+/* CLASSI CUSTOM PER IL COLORE RICHIESTO (#14265a) */
+.custom-bg-primary {
+    background-color: var(--color-primary) !important; /* #14265a */
+    color: white; /* Testo bianco sullo sfondo scuro */
+}
+.custom-border-primary {
+    border-color: var(--color-primary) !important;
 }
 
-.app-header-fixed {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 1rem 1.5rem;
-  height:auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  /* COLORE RICHIESTO PER L'HEADER */
-  background-color: var(--color-primary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); /* Ombra più scura */
-  z-index: 1000;
-}
 
-.header-left {
-  flex-shrink: 1;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  min-width: 0;
-}
+/* **************************************************
+ * LAYOUT E STRUTTURA (Mantenuto)
+ * **************************************************/
 
-.header-center {
-  flex-grow: 1;
-  text-align: center;
-  padding: 0 0.5rem;
-  min-width: 0;
-}
-
-.app-logo {
-  max-height: 60px;
-  width: auto;
-  /* Filtro bianco per assicurare che il logo sia leggibile su sfondo scuro (se necessario) */
-  filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
-}
-
-/* ----------------------------------------------------------------- */
-/* STILI DEL LAYOUT A TRE COLONNE */
-/* ----------------------------------------------------------------- */
 .dashboard-layout {
     display: grid;
     max-width: 1400px;
     width: 100%;
     margin: 0 auto;
-
     padding: 1px 15px 20px 15px;
     background-color: var(--color-background);
     min-height: calc(100vh - 100px);
-
     grid-template-columns: minmax(250px, 380px) minmax(450px, 550px) minmax(250px, 380px);
     gap: 20px;
     margin-left: 175px;
@@ -319,7 +301,6 @@ body {
     flex-direction: column;
     align-items: center;
     align-self: start;
-
     max-width: 100%;
     width: 100%;
     padding: 0;
@@ -341,55 +322,93 @@ body {
 .sidebar-title {
     font-size: 1.3rem;
     margin-bottom: 15px;
-    /* Titoli in colore Primario/Branding */
     color: var(--color-primary);
     border-bottom: 2px solid var(--color-border);
     padding-bottom: 5px;
     font-weight: 600;
 }
 
+/* **************************************************
+ * LISTA ALLARMI (Modificato per look pulito)
+ * **************************************************/
+
 /* Stile per i list-group-item all'interno della sidebar */
 .list-group-item {
     color: var(--color-text-dark);
-    border-color: var(--color-border);
     margin-bottom: -1px;
 }
 
 .plc-list-title {
-  /* Testo in colore Secondario Scuro per un buon contrasto */
-  color: var(--color-secondary);
   font-weight: bold;
-  margin-top: 10px;
-  margin-bottom: 5px;
-  background-color: var(--color-background);
-  padding: 5px 0;
-  border-radius: 4px;
+  /* Margini e padding applicati nel template */
+  margin-bottom: 0 !important; /* Rimuove il margine inferiore standard per attaccarlo alla lista */
+  padding: 8px 0; /* Aumentato il padding per separare bene */
+  border-radius: 4px 4px 0 0; /* Angoli arrotondati in alto */
 }
 
-/* Colori Bootstrap sovrascritti per i bottoni e select */
+.allarm-scroll-container {
+    max-height: 260px;
+    overflow-y: auto;
+    padding-right: 10px;
+    margin-bottom: 20px;
+    background-color: var(--color-card-bg);
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    /* Rimosso il padding per lasciare che la lista tocchi il bordo */
+    padding: 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 
-/* CTA principale - Arancione brillante su sfondo primario */
+/* Assicura che la lista non abbia bordi esterni e mantenga gli stili */
+.list-group-flush {
+    border: none;
+    /* Assicura che la lista sia all'interno del contenitore bordato */
+    border-radius: 0 0 8px 8px;
+}
+.list-group-flush .list-group-item {
+    border-left: none;
+    border-right: none;
+}
+
+/* **************************************************
+ * STILI BOTTONI E ALTRI ELEMENTI (Mantenuto)
+ * **************************************************/
+
 .btn-primary {
     background-color: var(--color-accent-cta) !important;
     border-color: var(--color-accent-cta) !important;
     font-weight: bold;
-    color: white; /* Assicura che il testo sia bianco sull'arancione */
+    color: white;
     transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
 }
 .btn-primary:hover {
-    background-color: #004f70 !important; /* Tonalità scura di arancione all'hover */
+    background-color: #004f70 !important;
     border-color: #004f70 !important;
     transform: translateY(-1px);
 }
 
-/* Bottone di Ricerca - Colore secondario scuro su Primario (header) o Bordo su Card (body) */
+.app-header-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  height:auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
+}
+
 .btn-outline-dark.search-btn {
-    color: white !important; /* Testo bianco nell'header scuro */
+    color: white !important;
     border-color: white !important;
     transition: all 0.3s ease;
 }
 .btn-outline-dark.search-btn:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important; /* Leggero hover trasparente */
+    background-color: rgba(255, 255, 255, 0.1) !important;
     color: white !important;
 }
 
@@ -397,31 +416,10 @@ body {
   border-color: var(--color-border);
   color: var(--color-text-dark);
   background-color: var(--color-card-bg);
+  margin-bottom: 10px;
 }
 .form-select:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 0.25rem rgba(37, 150, 190, 0.25); /* Ombra con ciano richiesto */
-}
-
-.filter-label {
-  color: var(--color-text-muted);
-}
-
-/* Adattamento per i badge KPI */
-.kpi-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.allarm-scroll-container {
-    max-height: 250px;
-    overflow-y: auto;
-    padding-right: 10px;
-    margin-bottom: 20px;
-    background-color: var(--color-card-bg);
-    border-radius: 8px;
-    border: 1px solid var(--color-border);
+  box-shadow: 0 0 0 0.25rem rgba(37, 150, 190, 0.25);
 }
 </style>

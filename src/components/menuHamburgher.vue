@@ -82,13 +82,23 @@
 
 <style scoped>
 /* Il menu offcanvas deve adottare i colori del tema globale */
+/* Larghezza 250px e posizione 120px sotto l'header/searchbar */
+
+
+/* Forza lo Z-index: il pannello (1060) deve essere sopra il backdrop (1050) */
+.offcanvas {
+    z-index: 1060 !important;
+}
+
+/* **************************************************
+ * (Mantieni il resto del tuo stile per colori e link)
+ * **************************************************/
+
+/* Il menu offcanvas deve adottare i colori del tema globale */
 .menu-offcanvas {
-    /* Usa lo sfondo card per l'offcanvas, che si adatta a dark/light */
     background-color: var(--color-card-bg) !important;
     color: var(--color-text-primary);
 }
-
-
 .menu-title {
     color: var(--color-accent); /* Colore primario per il titolo di sezione */
     font-weight: bold;

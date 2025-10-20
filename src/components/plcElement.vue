@@ -3,7 +3,7 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-// 1. Definiamo la prop per ricevere l'array di PLC filtrati dal componente padre
+// 1. Definiamo la prop per ricevere l'array di PLC (che ora deve contenere lo store)
 defineProps({
     plcs: {
         type: Array,
@@ -14,7 +14,7 @@ defineProps({
 // 2. Funzione per la navigazione dinamica
 function navigateTo(route) {
     if (route) {
-        // Usa router.push per navigare alla route specifica del PLC
+        // Usa router.push per navigare alla route specifica del PLC (es. /dettaglio/plc1)
         router.push(route);
     }
 }

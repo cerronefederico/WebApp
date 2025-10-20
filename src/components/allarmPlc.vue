@@ -1,24 +1,68 @@
 <script setup lang="ts">
-import { usePlc1Store} from '@/stores/index';
-import {computed} from "vue";
+import { computed, defineProps } from "vue";
+import { useRoute } from "vue-router"; // Importa useRoute per il fallback, se necessario
 
-const plc1 = usePlc1Store();
+// ⭐ 1. DEFINIZIONE DELLE PROP (plcStore è fondamentale)
+const props = defineProps({
+  plcStore: {
+    type: Object, // L'istanza dello store Pinia iniettata
+    required: true,
+  },
+  // plcId non è strettamente necessario per la logica qui, ma è buona prassi
+  plcId: {
+    type: String,
+    default: 'PLC Sconosciuto',
+  }
+});
 
+// Aggiungi un controllo per la disponibilità dei dati
+const plcStati = computed(() => {
+    // Controlla se lo store esiste e se ha l'array getStati definito
+    return props.plcStore.getStati && props.plcStore.getStati.length > 0
+        ? props.plcStore.getStati[0]
+        : null; // Ritorna null se i dati non sono disponibili
+});
+
+
+// 2. LOGICA PER ELENCO ALLARMI DINAMICO
+const allarmiList = computed(() => {
+    const stati = plcStati.value;
+
+    if (!stati) return []; // Ritorna array vuoto se i dati non sono pronti
+
+    // Mappa gli attributi degli allarmi al testo da visualizzare
+    return [
+        { key: 'aanomaliagenerica', label: 'Anomalia Generica' },
+        { key: 'amotorenastro', label: 'Anomalia Motore Nastro' },
+        { key: 'amancanzaconsenso', label: 'Anomalia Mancanza Consenso' },
+        { key: 'atemperaturaprodottoalta', label: 'Anomalia Temperatura Prodotto Alta' },
+        { key: 'aemergenzainserita', label: 'Anomalia Emergenza Inserita' },
+        { key: 'atemperaturacpuelevata', label: 'Anomalia Temperatura CPU Elevata' },
+        { key: 'aaggraffatricespenta', label: 'Anomalia Aggraffatrice Spenta' },
+        { key: 'anastrospento', label: 'Anomalia Nastro Spento' },
+    ].map(alarm => ({
+        ...alarm,
+        // Ottiene lo stato booleano (true/false) per l'allarme corrente
+        is_active: stati[alarm.key] || false,
+    }));
+});
+
+
+// 3. LOGICA PER IL FORMATTO DELLA DATA/ORA
 const formattedLastUpdate = computed(() => {
-    const oraCompleta = plc1.getStati[0]?.ora;
+    const stati = plcStati.value;
+    const oraCompleta = stati?.ora;
+
     if (!oraCompleta || typeof oraCompleta !== 'string') {
         return 'N/A';
     }
-    const puntoIndex = oraCompleta.indexOf('.');
-    if (puntoIndex !== -1) {
-        return oraCompleta.substring(0, puntoIndex).replace('T', ' ');
-    }
-    const plusIndex = oraCompleta.indexOf('+');
-    if (plusIndex !== -1) {
-        return oraCompleta.substring(0, plusIndex).replace('T', ' ');
-    }
 
-    return oraCompleta.replace('T', ' ');
+    // Logica di formattazione invariata
+    const puntoIndex = oraCompleta.indexOf('.');
+    const trimmed = puntoIndex !== -1 ? oraCompleta.substring(0, puntoIndex) : oraCompleta;
+
+    // Rimuove 'T' e i suffissi del fuso orario (es. +02:00)
+    return trimmed.replace('T', ' ').replace(/\+\d{2}:\d{2}$/, '');
 });
 
 </script>
@@ -37,123 +81,29 @@ const formattedLastUpdate = computed(() => {
         <thead>
           <tr>
             <th style="width: 70%;">Allarmi</th>
-            <th style="width: 30%;">stato</th>
+            <th style="width: 30%;">Stato</th>
           </tr>
         </thead>
         <tbody>
-          <tr :class="{ 'table-danger': plc1.getStati[0].aanomaliagenerica, 'table-info': !plc1.getStati[0].aanomaliagenerica }">
+          <tr v-if="allarmiList.length === 0">
+            <td colspan="2" class="text-center text-muted">Dati PLC non ancora disponibili o non caricati.</td>
+          </tr>
+
+          <tr v-for="alarm in allarmiList" :key="alarm.key"
+              :class="{ 'table-danger': alarm.is_active, 'table-info': !alarm.is_active }">
             <td>
-               <span class="status-text" :class="{ 'text-danger': plc1.getStati[0].aanomaliagenerica, 'text-success': !plc1.getStati[0].aanomaliagenerica }">Anomalia Generica</span>
+               <span class="status-text" :class="{ 'text-danger': alarm.is_active, 'text-success': !alarm.is_active }">{{ alarm.label }}</span>
             </td>
             <td>
               <span class="status-badge-wrapper">
-                    <span :class="['status-dot', { 'dot-active': plc1.getStati[0].aanomaliagenerica }]"></span>
+                    <span :class="['status-dot', { 'dot-active': alarm.is_active }]"></span>
 
-                    <span :class="{ 'text-danger': plc1.getStati[0].aanomaliagenerica, 'text-success': !plc1.getStati[0].aanomaliagenerica }">
-                        {{ plc1.getStati[0].aanomaliagenerica ? 'ATTIVO' : 'OK' }}
+                    <span :class="{ 'text-danger': alarm.is_active, 'text-success': !alarm.is_active }">
+                        {{ alarm.is_active ? 'ATTIVO' : 'OK' }}
                     </span>
                 </span>
             </td>
           </tr>
-                  <tr :class="{ 'table-danger': plc1.getStati[0].amotorenastro, 'table-info': !plc1.getStati[0].amotorenastro }">
-            <td>
-               <span class="status-text" :class="{ 'text-danger': plc1.getStati[0].amotorenastro, 'text-success': !plc1.getStati[0].amotorenastro }">Anomalia Motore Nastro</span>
-            </td>
-            <td>
-              <span class="status-badge-wrapper">
-                    <span :class="['status-dot', { 'dot-active': plc1.getStati[0].amotorenastro }]"></span>
-
-                    <span :class="{ 'text-danger': plc1.getStati[0].amotorenastro, 'text-success': !plc1.getStati[0].amotorenastro }">
-                        {{ plc1.getStati[0].amotorenastro ? 'ATTIVO' : 'OK' }}
-                    </span>
-                </span>
-            </td>
-          </tr>
-          <tr :class="{ 'table-danger': plc1.getStati[0].amancanzaconsenso, 'table-info': !plc1.getStati[0].amancanzaconsenso }">
-            <td>
-               <span class="status-text" :class="{ 'text-danger': plc1.getStati[0].amancanzaconsenso, 'text-success': !plc1.getStati[0].amancanzaconsenso }">Anomalia Mancanza Consenso</span>
-            </td>
-            <td>
-              <span class="status-badge-wrapper">
-                    <span :class="['status-dot', { 'dot-active': plc1.getStati[0].amancanzaconsenso }]"></span>
-
-                    <span :class="{ 'text-danger': plc1.getStati[0].amancanzaconsenso, 'text-success': !plc1.getStati[0].amancanzaconsenso }">
-                        {{ plc1.getStati[0].amancanzaconsenso ? 'ATTIVO' : 'OK' }}
-                    </span>
-                </span>
-            </td>
-          </tr>
-          <tr :class="{ 'table-danger': plc1.getStati[0].atemperaturaprodottoalta, 'table-info': !plc1.getStati[0].atemperaturaprodottoalta }">
-            <td>
-               <span class="status-text" :class="{ 'text-danger': plc1.getStati[0].atemperaturaprodottoalta, 'text-success': !plc1.getStati[0].atemperaturaprodottoalta }">Anomalia Temperatura Prodotto Alta</span>
-            </td>
-            <td>
-              <span class="status-badge-wrapper">
-                    <span :class="['status-dot', { 'dot-active': plc1.getStati[0].atemperaturaprodottoalta }]"></span>
-
-                    <span :class="{ 'text-danger': plc1.getStati[0].atemperaturaprodottoalta, 'text-success': !plc1.getStati[0].atemperaturaprodottoalta }">
-                        {{ plc1.getStati[0].atemperaturaprodottoalta ? 'ATTIVO' : 'OK' }}
-                    </span>
-                </span>
-            </td>
-          </tr>
-          <tr :class="{ 'table-danger': plc1.getStati[0].aemergenzainserita, 'table-info': !plc1.getStati[0].aemergenzainserita }">
-            <td>
-               <span class="status-text" :class="{ 'text-danger': plc1.getStati[0].aemergenzainserita, 'text-success': !plc1.getStati[0].aemergenzainserita }">Anomalia Emergenza Inserita</span>
-            </td>
-            <td>
-              <span class="status-badge-wrapper">
-                    <span :class="['status-dot', { 'dot-active': plc1.getStati[0].aemergenzainserita }]"></span>
-
-                    <span :class="{ 'text-danger': plc1.getStati[0].aemergenzainserita, 'text-success': !plc1.getStati[0].aemergenzainserita }">
-                        {{ plc1.getStati[0].aemergenzainserita ? 'ATTIVO' : 'OK' }}
-                    </span>
-                </span>
-            </td>
-          </tr>
-          <tr :class="{ 'table-danger': plc1.getStati[0].atemperaturacpuelevata, 'table-info': !plc1.getStati[0].atemperaturacpuelevata }">
-            <td>
-               <span class="status-text" :class="{ 'text-danger': plc1.getStati[0].atemperaturacpuelevata, 'text-success': !plc1.getStati[0].atemperaturacpuelevata }">Anomalia Temperatura CPU Elevata</span>
-            </td>
-            <td>
-              <span class="status-badge-wrapper">
-                    <span :class="['status-dot', { 'dot-active': plc1.getStati[0].atemperaturacpuelevata }]"></span>
-
-                    <span :class="{ 'text-danger': plc1.getStati[0].atemperaturacpuelevata, 'text-success': !plc1.getStati[0].atemperaturacpuelevata }">
-                        {{ plc1.getStati[0].atemperaturacpuelevata ? 'ATTIVO' : 'OK' }}
-                    </span>
-                </span>
-            </td>
-          </tr>
-          <tr :class="{ 'table-danger': plc1.getStati[0].aaggraffatricespenta, 'table-info': !plc1.getStati[0].aaggraffatricespenta }">
-            <td>
-               <span class="status-text" :class="{ 'text-danger': plc1.getStati[0].aaggraffatricespenta, 'text-success': !plc1.getStati[0].aaggraffatricespenta }">Anomalia Aggraffatrice Spenta</span>
-            </td>
-            <td>
-              <span class="status-badge-wrapper">
-                    <span :class="['status-dot', { 'dot-active': plc1.getStati[0].aaggraffatricespenta }]"></span>
-
-                    <span :class="{ 'text-danger': plc1.getStati[0].aaggraffatricespenta, 'text-success': !plc1.getStati[0].aaggraffatricespenta }">
-                        {{ plc1.getStati[0].aaggraffatricespenta ? 'ATTIVO' : 'OK' }}
-                    </span>
-                </span>
-            </td>
-          </tr>
-          <tr :class="{ 'table-danger': plc1.getStati[0].anastrospento, 'table-info': !plc1.getStati[0].anastrospento }">
-            <td>
-               <span class="status-text" :class="{ 'text-danger': plc1.getStati[0].anastrospento, 'text-success': !plc1.getStati[0].anastrospento }">Anomalia Nastro Spento</span>
-            </td>
-            <td>
-              <span class="status-badge-wrapper">
-                    <span :class="['status-dot', { 'dot-active': plc1.getStati[0].anastrospento }]"></span>
-
-                    <span :class="{ 'text-danger': plc1.getStati[0].anastrospento, 'text-success': !plc1.getStati[0].anastrospento }">
-                        {{ plc1.getStati[0].anastrospento ? 'ATTIVO' : 'OK' }}
-                    </span>
-                </span>
-            </td>
-          </tr>
-
         </tbody>
       </table>
     </div>
@@ -162,6 +112,11 @@ const formattedLastUpdate = computed(() => {
 </template>
 
 <style scoped>
+/* Il blocco style rimane invariato e definito qui */
+.table-scroll-container {
+    max-height: 400px; /* Aggiunto un limite per scroll verticale se la lista è lunga */
+    overflow-y: auto;
+}
 
 .status-text {
     font-weight: 500;
@@ -175,7 +130,7 @@ const formattedLastUpdate = computed(() => {
     font-weight: bold;
     font-size: 0.8rem;
     gap: 7px;
-    flex-shrink: 0; /* Impedisce che si riduca troppo */
+    flex-shrink: 0;
 }
 
 /* IL PALLINO COLORATO */
@@ -190,9 +145,7 @@ const formattedLastUpdate = computed(() => {
 }
 
 .status-dot.dot-active {
-    background-color: var(--bs-danger, #198754);
+    background-color: var(--bs-danger, #dc3545);
     box-shadow: 0 0 8px var(--bs-danger, #dc3545);
 }
-
-
 </style>

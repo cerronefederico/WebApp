@@ -6,6 +6,7 @@ export const useWebSocketStore = defineStore('websocketConnection', {
     socket: null,
     isConnected: false,
     reconnectTimer: null,
+      isDataReady: false,
   }),
   actions: {
     connect() {
@@ -18,9 +19,14 @@ export const useWebSocketStore = defineStore('websocketConnection', {
         console.log("WebSocket connesso. Pronto per i dati in tempo reale.");
       };
 
-      this.socket.onmessage = (event) => {
+    this.socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
         this.handleMessage(data);
+        // Imposta il flag a TRUE dopo il primo messaggio
+        if (!this.isDataReady) {
+            this.isDataReady = true;
+            console.log("Primo pacchetto dati PLC ricevuto.");
+        }
       };
 
       this.socket.onclose = () => {

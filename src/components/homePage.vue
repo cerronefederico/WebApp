@@ -154,21 +154,6 @@ const formattedTime = computed(() => {
 </script>
 
 <template>
-<header class="app-header-fixed">
-   <div class="header-left">
-    <MenuHamburgher></MenuHamburgher>
-     <button type="button" class="btn btn-outline-dark search-btn" data-bs-toggle="modal" data-bs-target="#searchModal">
-        Ricerca&nbsp;<i class="bi bi-search"></i>
-      </button>
-    </div>
-    <div class="header-center">
-    <img src="/img/logoApplicazione.png" alt="ModuView Logo" class="app-logo">
-    </div>
-
-  <MenuAccount></MenuAccount>
-</header>
-  <SearchBar></SearchBar>
-
   <div class="dashboard-layout position-absolute start-0">
 
     <aside class="sidebar-left">
@@ -320,7 +305,7 @@ body {
     width: 100%;
     margin: 0 auto;
 
-    padding: 100px 15px 20px 15px;
+    padding: 1px 15px 20px 15px;
     background-color: var(--color-background);
     min-height: calc(100vh - 100px);
 

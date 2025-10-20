@@ -35,7 +35,7 @@
                     <router-link to="/home" class="menu-item"><i class="bi bi-house-door"></i> Home (PLC Status)</router-link>
                 </li>
                 <li class="list-group-item list-group-item-action">
-                    <router-link to="/alarms" class="menu-item"><i class="bi bi-bell"></i> Allarmi Attivi</router-link>
+                    <router-link to="/home/alarms" class="menu-item"><i class="bi bi-bell"></i> Allarmi Attivi</router-link>
                 </li>
             </ul>
         </div>

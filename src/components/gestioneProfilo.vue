@@ -1,44 +1,92 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { useAuthStore } from "@/stores/auth.js";
+import { useRouter } from "vue-router";
 
-const currentUserId = ref('MarioRossi_ID123');
+const authStore = useAuthStore();
+const router = useRouter();
 
-const user = ref({
-    name: 'Mario',
-    surname: 'Rossi',
-    role: 'Manutentore',
-    email: 'mario.rossi@azienda.it',
-    theme: localStorage.getItem(`hmi-theme-${currentUserId.value}`) || 'light',
+// 1. Definisce la chiave univoca per localStorage
+// Prende l'email direttamente dallo store. Se lo store è null, usa una stringa vuota o un fallback.
+const userIdKey = computed(() => authStore.currentUser || '');
+
+const ruolo = computed(() => {
+    const userIdentifier = authStore.currentUser;
+
+    // Verifica se l'identificativo utente (l'email in questo caso) è esattamente 'admin' (case-insensitive)
+    if (userIdentifier && userIdentifier.toLowerCase() === 'admin@ing.com') {
+        return 'Amministratore'; // Ruolo 'Amministratore'
+    } else {
+        return 'Manutentore'; // Ruolo di default
+    }
 });
+
+// 2. Mantiene la logica del tema (theme) localmente
+// Il tema viene inizializzato con la preferenza salvata in localStorage, usando l'email come chiave.
+const theme = ref(
+    localStorage.getItem(`hmi-theme-${userIdKey.value}`) || 'light'
+);
+
+// 3. Rimosse le variabili 'currentUserId' e 'user' fittizie.
+//    L'unico dato utente utilizzato è 'authStore.currentUser' per l'email e la chiave del tema.
 
 const activeTab = ref('info');
 
-const applyTheme = (theme) => {
+const applyTheme = (currentTheme) => {
     const container = document.getElementById('app-container');
 
     if (container) {
-        container.classList.toggle('dark-mode', theme === 'dark');
-        document.body.classList.toggle('dark-bg', theme === 'dark');
+        container.classList.toggle('dark-mode', currentTheme === 'dark');
+        document.body.classList.toggle('dark-bg', currentTheme === 'dark');
     }
 };
 
-onMounted(() => {
-    applyTheme(user.value.theme);
+const utenti = ref([]);
+
+onMounted(async () => {
+  // Applica il tema salvato al mount
+  applyTheme(theme.value);
+  const data = await listUtenti();
+  if (data) {
+    utenti.value = data;
+  }
 });
 
 
 const handleLogout = () => {
-    console.log('Utente disconnesso.');
+    authStore.logout();
     alert('Logout effettuato. Reindirizzamento al login.');
+    router.push('/');
 };
 
 const savePreferences = () => {
-    applyTheme(user.value.theme);
+    applyTheme(theme.value);
 
-    localStorage.setItem(`hmi-theme-${currentUserId.value}`, user.value.theme);
+    // Salva il tema usando l'ID utente/email Pinia come chiave
+    localStorage.setItem(`hmi-theme-${userIdKey.value}`, theme.value);
 
-    console.log('Preferenze salvate:', user.value);
+    console.log('Preferenze salvate:', theme.value);
     alert('Preferenze HMI salvate con successo!');
+};
+
+const listUtenti = async () => {
+  try {
+    const response = await fetch('http://localhost:8000/api/listaUtenti', {
+          method: 'GET',
+    });
+
+    // Gestione della risposta:
+    if (!response.ok) {
+        throw new Error(`Errore HTTP! Stato: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+
+  } catch (error) {
+    console.error('Errore durante il recupero della lista utenti:', error);
+    // Gestione dell'errore (e.g., mostrare un messaggio all'utente)
+  }
 };
 </script>
 
@@ -46,7 +94,7 @@ const savePreferences = () => {
   <div class="profile-container">
     <div class="header">
       <h2><i class="fas fa-user-circle"></i> Gestione Profilo</h2>
-      <p class="role-badge" :class="user.role.toLowerCase()">Ruolo: {{ user.role }}</p>
+      <p class="role-badge" :class="{'bg-success': ruolo === 'Amministratore'}">Ruolo: {{ruolo}}</p>
     </div>
 
     <div class="tabs-nav">
@@ -59,18 +107,20 @@ const savePreferences = () => {
       <button :class="{ active: activeTab === 'security' }" @click="activeTab = 'security'">
         <i class="fas fa-lock"></i> Sicurezza
       </button>
+      <button v-if="ruolo==='Amministratore'" :class="{ active: activeTab === 'admin' }" @click="activeTab = 'admin'">
+        <i class="fas fa-lock"></i> Admin
+      </button>
     </div>
 
     <div v-if="activeTab === 'info'" class="tab-content">
       <h3 class="section-title">Informazioni Personali</h3>
       <div class="info-group">
-        <label>Nome Completo:</label> <span>{{ user.name }} {{ user.surname }}</span>
+        <label>Email:</label> <span>{{ authStore.currentUser }}</span>
       </div>
       <div class="info-group">
-        <label>Email:</label> <span>{{ user.email }}</span>
-      </div>
-      <div class="info-group">
-        <label>Livello Accesso:</label> <span class="fw-bold">{{ user.role }}</span>
+        <label>Livello Accesso:</label>
+        <div class="text text-primary" :class="{'text text-success': ruolo === 'Amministratore'}">{{ruolo}}</div>
+        <span class="fw-bold" ></span>
       </div>
     </div>
 
@@ -79,7 +129,7 @@ const savePreferences = () => {
 
       <div class="setting-item">
         <label for="theme">Tema Grafico:</label>
-        <select id="theme" v-model="user.theme" class="form-control">
+        <select id="theme" v-model="theme" class="form-control">
           <option value="light">Chiaro</option>
           <option value="dark">Scuro (Ideale per notturna)</option>
         </select>
@@ -105,10 +155,60 @@ const savePreferences = () => {
       </button>
     </div>
 
+    <div v-else-if="activeTab === 'admin'" class="tab-content">
+      <h3 class="section-title">Lista utenti</h3>
+      <div class="card">
+        <div class="card-body">
+          <div class="container-fluid overflow-auto" style="max-height: 500px;">
+          <ul class="list-group">
+            <li v-for="utente in utenti" class="list-group-item">{{utente["email"]}}
+            </li>
+          </ul>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary mt-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">Aggiungi utente</button>
+
+    </div>
+
+
+
   </div>
+
+<div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasBottomLabel">Inserisci credenziali</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+
+  <div class="offcanvas-body">
+    <div class="d-flex justify-content-around">
+      <div>
+        <label for="inputEmail" class="form-label visually-hidden">Email</label>
+
+        <div class="input-group">
+          <input type="text" class="form-control" id="inputEmail" placeholder="nomeutente">
+
+          <span class="input-group-text">@ing.com</span>
+        </div>
+      </div>
+      <div>
+        <label for="inputPassword" class="form-label visually-hidden">Password</label>
+        <input type="text" class="form-control" id="inputPassword" placeholder="Password">
+      </div>
+      <div>
+        <button type="button" class="btn btn-primary">
+          Conferma
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
 </template>
 
 <style scoped>
+/* Stili invariati, ma ho rimosso le classi non più usate per i ruoli */
 .profile-container {
     max-width: 900px;
     margin: 40px auto;
@@ -134,11 +234,8 @@ const savePreferences = () => {
     font-weight: bold;
     color: white;
     font-size: 0.9em;
+    background-color: #007bff;
 }
-.manutentore { background-color: #007bff; }
-.operatore { background-color: #28a745; }
-.amministratore { background-color: #dc3545; }
-
 
 .tabs-nav {
     display: flex;
@@ -226,7 +323,7 @@ const savePreferences = () => {
 </style>
 
 <style>
-/* Stili GLOBALI PER IL TEMA (Da inserire globalmente nell'app) */
+/* Stili GLOBALI PER IL TEMA (Lasciati invariati) */
 :root {
     --color-background: #f4f7f9;
     --color-background-secondary: #f8f9fa;

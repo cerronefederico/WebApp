@@ -1,11 +1,18 @@
 <script setup lang="ts">
-import { usePlc1Store} from '@/stores/index';
-import {computed} from "vue";
+import { computed, defineProps } from "vue";
+// Rimosso: import { usePlc1Store} from '@/stores/index';
 
-const plc1 = usePlc1Store();
+// ⭐ Definisco la prop per ricevere lo store
+const props = defineProps({
+  plcStore: {
+    type: Object,
+    required: true,
+  },
+});
 
+// ⭐ Uso props.plcStore per accedere ai dati
 const formattedLastUpdate = computed(() => {
-    const oraCompleta = plc1.getStati[0]?.ora;
+    const oraCompleta = props.plcStore.getStati[0]?.ora;
     if (!oraCompleta || typeof oraCompleta !== 'string') {
         return 'N/A';
     }
@@ -21,6 +28,8 @@ const formattedLastUpdate = computed(() => {
     return oraCompleta.replace('T', ' ');
 });
 
+// Variabile di stato per semplificare il template
+const stato = computed(() => props.plcStore.getStati[0]);
 
 </script>
 
@@ -43,72 +52,72 @@ const formattedLastUpdate = computed(() => {
           </tr>
         </thead>
         <tbody>
-          <tr :class="{ 'table-warning': plc1.getStati[0].wtermico, 'table-info': !plc1.getStati[0].wtermico }">
+          <tr :class="{ 'table-warning': stato.wtermico, 'table-info': !stato.wtermico }">
             <td>
-               <span class="status-text" :class="{ 'text-warning': plc1.getStati[0].wtermico, 'text-success': !plc1.getStati[0].wtermico }">Warning Termico</span>
+               <span class="status-text" :class="{ 'text-warning': stato.wtermico, 'text-success': !stato.wtermico }">Warning Termico</span>
             </td>
             <td>
               <span class="status-badge-wrapper">
-                    <span :class="['status-dot', { 'dot-active': plc1.getStati[0].wtermico }]"></span>
+                    <span :class="['status-dot', { 'dot-active': stato.wtermico }]"></span>
 
-                    <span :class="{ 'text-warning': plc1.getStati[0].wtermico, 'text-success': !plc1.getStati[0].wtermico }">
-                        {{ plc1.getStati[0].wtermico ? 'ATTIVO' : 'OK' }}
+                    <span :class="{ 'text-warning': stato.wtermico, 'text-success': !stato.wtermico }">
+                        {{ stato.wtermico ? 'ATTIVO' : 'OK' }}
                     </span>
                 </span>
             </td>
           </tr>
-        <tr :class="{ 'table-warning': plc1.getStati[0].wanomalianastro, 'table-info': !plc1.getStati[0].wanomalianastro }">
+        <tr :class="{ 'table-warning': stato.wanomalianastro, 'table-info': !stato.wanomalianastro }">
             <td>
-               <span class="status-text" :class="{ 'text-warning': plc1.getStati[0].wanomalianastro, 'text-success': !plc1.getStati[0].wanomalianastro }">Warning Anomalia Nastro</span>
+               <span class="status-text" :class="{ 'text-warning': stato.wanomalianastro, 'text-success': !stato.wanomalianastro }">Warning Anomalia Nastro</span>
             </td>
             <td>
               <span class="status-badge-wrapper">
-                    <span :class="['status-dot', { 'dot-active': plc1.getStati[0].wanomalianastro }]"></span>
+                    <span :class="['status-dot', { 'dot-active': stato.wanomalianastro }]"></span>
 
-                    <span :class="{ 'text-warning': plc1.getStati[0].wanomalianastro, 'text-success': !plc1.getStati[0].wanomalianastro }">
-                        {{ plc1.getStati[0].wanomalianastro ? 'ATTIVO' : 'OK' }}
+                    <span :class="{ 'text-warning': stato.wanomalianastro, 'text-success': !stato.wanomalianastro }">
+                        {{ stato.wanomalianastro ? 'ATTIVO' : 'OK' }}
                     </span>
                 </span>
             </td>
           </tr>
-                <tr :class="{ 'table-warning': plc1.getStati[0].wmancanzaprodotto, 'table-info': !plc1.getStati[0].wmancanzaprodotto }">
+                <tr :class="{ 'table-warning': stato.wmancanzaprodotto, 'table-info': !stato.wmancanzaprodotto }">
             <td>
-               <span class="status-text" :class="{ 'text-warning': plc1.getStati[0].wmancanzaprodotto, 'text-success': !plc1.getStati[0].wmancanzaprodotto }">Warning Mancanza Prodotto</span>
+               <span class="status-text" :class="{ 'text-warning': stato.wmancanzaprodotto, 'text-success': !stato.wmancanzaprodotto }">Warning Mancanza Prodotto</span>
             </td>
             <td>
               <span class="status-badge-wrapper">
-                    <span :class="['status-dot', { 'dot-active': plc1.getStati[0].wmancanzaprodotto }]"></span>
+                    <span :class="['status-dot', { 'dot-active': stato.wmancanzaprodotto }]"></span>
 
-                    <span :class="{ 'text-warning': plc1.getStati[0].wmancanzaprodotto, 'text-success': !plc1.getStati[0].wmancanzaprodotto }">
-                        {{ plc1.getStati[0].wmancanzaprodotto ? 'ATTIVO' : 'OK' }}
+                    <span :class="{ 'text-warning': stato.wmancanzaprodotto, 'text-success': !stato.wmancanzaprodotto }">
+                        {{ stato.wmancanzaprodotto ? 'ATTIVO' : 'OK' }}
                     </span>
                 </span>
             </td>
           </tr>
-                        <tr :class="{ 'table-warning': plc1.getStati[0].wpieno, 'table-info': !plc1.getStati[0].wpieno }">
+                        <tr :class="{ 'table-warning': stato.wpieno, 'table-info': !stato.wpieno }">
             <td>
-               <span class="status-text" :class="{ 'text-warning': plc1.getStati[0].wpieno, 'text-success': !plc1.getStati[0].wpieno }">Warning Pieno</span>
+               <span class="status-text" :class="{ 'text-warning': stato.wpieno, 'text-success': !stato.wpieno }">Warning Pieno</span>
             </td>
             <td>
               <span class="status-badge-wrapper">
-                    <span :class="['status-dot', { 'dot-active': plc1.getStati[0].wpieno }]"></span>
+                    <span :class="['status-dot', { 'dot-active': stato.wpieno }]"></span>
 
-                    <span :class="{ 'text-warning': plc1.getStati[0].wpieno, 'text-success': !plc1.getStati[0].wpieno }">
-                        {{ plc1.getStati[0].wpieno ? 'ATTIVO' : 'OK' }}
+                    <span :class="{ 'text-warning': stato.wpieno, 'text-success': !stato.wpieno }">
+                        {{ stato.wpieno ? 'ATTIVO' : 'OK' }}
                     </span>
                 </span>
             </td>
           </tr>
-          <tr :class="{ 'table-warning': plc1.getStati[0].wportelloneaperto, 'table-info': !plc1.getStati[0].wportelloneaperto }">
+          <tr :class="{ 'table-warning': stato.wportelloneaperto, 'table-info': !stato.wportelloneaperto }">
             <td>
-               <span class="status-text" :class="{ 'text-warning': plc1.getStati[0].wportelloneaperto, 'text-success': !plc1.getStati[0].wportelloneaperto }">Warning Portellone Aperto</span>
+               <span class="status-text" :class="{ 'text-warning': stato.wportelloneaperto, 'text-success': !stato.wportelloneaperto }">Warning Portellone Aperto</span>
             </td>
             <td>
               <span class="status-badge-wrapper">
-                    <span :class="['status-dot', { 'dot-active': plc1.getStati[0].wportelloneaperto }]"></span>
+                    <span :class="['status-dot', { 'dot-active': stato.wportelloneaperto }]"></span>
 
-                    <span :class="{ 'text-warning': plc1.getStati[0].wportelloneaperto, 'text-success': !plc1.getStati[0].wportelloneaperto }">
-                        {{ plc1.getStati[0].wportelloneaperto ? 'ATTIVO' : 'OK' }}
+                    <span :class="{ 'text-warning': stato.wportelloneaperto, 'text-success': !stato.wportelloneaperto }">
+                        {{ stato.wportelloneaperto ? 'ATTIVO' : 'OK' }}
                     </span>
                 </span>
             </td>
@@ -123,7 +132,7 @@ const formattedLastUpdate = computed(() => {
 </template>
 
 <style scoped>
-
+/* Stili invariati */
 .status-text {
     font-weight: 500;
     margin-right: 15px;
@@ -136,7 +145,7 @@ const formattedLastUpdate = computed(() => {
     font-weight: bold;
     font-size: 0.8rem;
     gap: 7px;
-    flex-shrink: 0; /* Impedisce che si riduca troppo */
+    flex-shrink: 0;
 }
 
 /* IL PALLINO COLORATO */

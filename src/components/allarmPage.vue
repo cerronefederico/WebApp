@@ -94,89 +94,129 @@ const getAlarmList = (plc) => {
     }));
 };
 
+const getAlarmDisplayName = (technicalName: string): string => {
+    const map: Record<string, string> = {
+        'aanomaliagenerica': 'Anomalia Generica',
+        'amotorenastro': 'Motore Nastro',
+        'amancanzaconsenso': 'Mancanza Consenso',
+        'atemperaturaprodottoalta': 'Temperatura Prodotto Alta',
+        'aemergenzainserita': 'Emergenza Inserita',
+        'atemperaturacpuelevata': 'Temperatura CPU Elevata',
+        'aaggraffatricespenta': 'Aggraffatrice Spenta',
+        'anastrospento': 'Nastro Spento',
+    };
+    return map[technicalName] || technicalName.replace(/a([a-z])/g, (match, p1) => p1.toUpperCase());
+};
+
 </script>
 
 <template>
 <div class="container p-6">
-  <h1 class="text-center">Allarmi attivi</h1>
-  <div class="row">
-    <div class="col">
-      <div class="text-center">PLC1</div>
-      <table class="table table-bordered border-black">
-        <thead>
-          <tr>
-            <th scope="col">Allarme</th>
-            <th scope="col">Stato</th>
-            <th scope="col">Da Ora</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="alarm in getAlarmList(plc1)" :key="alarm.name">
-            <td>{{ alarm.name }}</td>
-            <td :class="{'text-danger fw-bold': alarm.stato, 'text-success': !alarm.stato}">
-                {{ alarm.stato ? 'ATTIVO' : 'OK' }}
-            </td>
-            <td>{{ formattedTime(alarm.ora) }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
 
-    <div class="col">
-      <div class="text-center">PLC2</div>
-      <table class="table table-bordered border-black">
-        <thead>
-          <tr>
-            <th scope="col">Allarme</th>
-            <th scope="col">Stato</th>
-            <th scope="col">Da Ora</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="alarm in getAlarmList(plc2)" :key="alarm.name">
-            <td>{{ alarm.name }}</td>
-            <td :class="{'text-danger fw-bold': alarm.stato, 'text-success': !alarm.stato}">
-                {{ alarm.stato ? 'ATTIVO' : 'OK' }}
-            </td>
-            <td>{{ formattedTime(alarm.ora) }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="col">
-      <div class="text-center">PLC3</div>
-      <table class="table table-bordered border-black">
-        <thead>
-          <tr>
-            <th scope="col">Allarme</th>
-            <th scope="col">Stato</th>
-            <th scope="col">Da Ora</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="alarm in getAlarmList(plc3)" :key="alarm.name">
-            <td>{{ alarm.name }}</td>
-            <td :class="{'text-danger fw-bold': alarm.stato, 'text-success': !alarm.stato}">
-                {{ alarm.stato ? 'ATTIVO' : 'OK' }}
-            </td>
-            <td>{{ formattedTime(alarm.ora) }}</td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="row mb-5">
+    <div class="col-12">
+      <h1 class="text-center display-4 fw-light text-secondary">
+        <span class="border-bottom border-4 pb-2 custom-border-primary custom-text-primary">Allarmi Attivi</span>
+      </h1>
     </div>
   </div>
 
-  <div class="d-flex justify-content-between my-4">
-    <button class="btn btn-primary" type="button" @click="toggleCollapse('collapse1')"
+  <div class="row g-4">
+
+    <div class="col-md-4">
+      <h2 class="text-center h4 mb-0 p-2 text-white rounded-top shadow-sm custom-bg-primary">PLC1</h2>
+
+      <div class="table-responsive shadow">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr class="table-primary">
+              <th scope="col" class="text-dark">Allarme</th>
+              <th scope="col" class="text-center text-dark">Stato</th>
+              <th scope="col" class="text-dark">Da Ora</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="alarm in getAlarmList(plc1)" :key="alarm.name"
+                :class="{'table-danger border-start border-5 border-danger': alarm.stato}">
+              <td :class="{'fw-bold': alarm.stato}">{{ getAlarmDisplayName(alarm.name) }}</td>
+              <td class="text-center">
+                <span :class="{'badge bg-danger text-uppercase p-2': alarm.stato, 'badge bg-success text-uppercase p-2': !alarm.stato, 'fw-bold': true}">
+                    {{ alarm.stato ? 'ATTIVO' : 'OK' }}
+                </span>
+              </td>
+              <td :class="{'fw-bold text-danger': alarm.stato}">{{ formattedTime(alarm.ora) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <h2 class="text-center h4 mb-0 p-2 text-white rounded-top shadow-sm custom-bg-primary">PLC2</h2>
+      <div class="table-responsive shadow">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr class="table-primary">
+              <th scope="col" class="text-dark">Allarme</th>
+              <th scope="col" class="text-center text-dark">Stato</th>
+              <th scope="col" class="text-dark">Da Ora</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="alarm in getAlarmList(plc2)" :key="alarm.name"
+                :class="{'table-danger border-start border-5 border-danger': alarm.stato}">
+              <td :class="{'fw-bold': alarm.stato}">{{ getAlarmDisplayName(alarm.name) }}</td>
+              <td class="text-center">
+                <span :class="{'badge bg-danger text-uppercase p-2': alarm.stato, 'badge bg-success text-uppercase p-2': !alarm.stato, 'fw-bold': true}">
+                    {{ alarm.stato ? 'ATTIVO' : 'OK' }}
+                </span>
+              </td>
+              <td :class="{'fw-bold text-danger': alarm.stato}">{{ formattedTime(alarm.ora) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <h2 class="text-center h4 mb-0 p-2 text-white rounded-top shadow-sm custom-bg-primary">PLC3</h2>
+      <div class="table-responsive shadow">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr class="table-primary">
+              <th scope="col" class="text-dark">Allarme</th>
+              <th scope="col" class="text-center text-dark">Stato</th>
+              <th scope="col" class="text-dark">Da Ora</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="alarm in getAlarmList(plc3)" :key="alarm.name"
+                :class="{'table-danger border-start border-5 border-danger': alarm.stato}">
+              <td :class="{'fw-bold': alarm.stato}">{{ getAlarmDisplayName(alarm.name) }}</td>
+              <td class="text-center">
+                <span :class="{'badge bg-danger text-uppercase p-2': alarm.stato, 'badge bg-success text-uppercase p-2': !alarm.stato, 'fw-bold': true}">
+                    {{ alarm.stato ? 'ATTIVO' : 'OK' }}
+                </span>
+              </td>
+              <td :class="{'fw-bold text-danger': alarm.stato}">{{ formattedTime(alarm.ora) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="d-flex justify-content-center my-5 gap-3">
+    <button class="btn shadow-lg custom-bg-primary text-white" type="button" @click="toggleCollapse('collapse1')"
       :aria-expanded="activeCollapse === 'collapse1'">
       Storico Allarmi PLC1
     </button>
-    <button class="btn btn-primary" type="button" @click="toggleCollapse('collapse2')"
+    <button class="btn shadow-lg custom-bg-primary text-white" type="button" @click="toggleCollapse('collapse2')"
       :aria-expanded="activeCollapse === 'collapse2'">
       Storico Allarmi PLC2
     </button>
-    <button class="btn btn-primary" type="button" @click="toggleCollapse('collapse3')"
+    <button class="btn shadow-lg custom-bg-primary text-white" type="button" @click="toggleCollapse('collapse3')"
       :aria-expanded="activeCollapse === 'collapse3'">
       Storico Allarmi PLC3
     </button>
@@ -189,7 +229,7 @@ const getAlarmList = (plc) => {
           :key="activeCollapse"
           class="chart-content-container"
         >
-          <div class="card card-body">
+         <div class="card card-body shadow-sm border-0 border-start border-end border-bottom border-1 custom-border-light">
             <GraficoStoricoAllarmi :plc-store="getActivePlcStore"></GraficoStoricoAllarmi>
           </div>
         </div>
@@ -199,23 +239,41 @@ const getAlarmList = (plc) => {
 </template>
 
 <style scoped>
+/* **************************************************
+ * COLORI CUSTOM con #14265a
+ * **************************************************/
+.custom-bg-primary {
+    background-color: #14265a !important;
+}
+.custom-border-primary {
+    border-color: #14265a !important;
+}
+/* Ho rimosso custom-text-primary dal titolo perché era troppo scuro per l'uso come testo primario.
+   Il bordo intorno al titolo è sufficiente a dare l'accento. */
+
+
+/* **************************************************
+ * Layout e Contenitori
+ * **************************************************/
 .collapse-wrapper {
-    /* Rimuovendo position: absolute, non serve più l'overflow-x */
+    /* Mantenuto per la struttura */
 }
 
 .chart-content-container {
-    /* Rimosso position: absolute */
     display: block;
-    width: 100%; /* Si adatta al 100% del div.container genitore */
+    width: 100%;
+}
+
+.card-body {
+    padding: 1.5rem;
 }
 
 /* **************************************************
- * ANIMAZIONE COLLAPSE VERTICALE
+ * Animazione COLLAPSE VERTICALE
  * **************************************************/
 
 .smooth-slide-vertical-enter-active,
 .smooth-slide-vertical-leave-active {
-  /* Transiziona l'altezza e l'opacità */
   transition: max-height 0.5s cubic-bezier(0.25, 0.8, 0.25, 1),
               opacity 0.4s ease-in-out;
   overflow: hidden;
@@ -223,28 +281,62 @@ const getAlarmList = (plc) => {
 
 .smooth-slide-vertical-enter-from,
 .smooth-slide-vertical-leave-to {
-  max-height: 0; /* Lo chiude in verticale */
+  max-height: 0;
   opacity: 0;
 }
 
 .smooth-slide-vertical-enter-to,
 .smooth-slide-vertical-leave-from {
-  /* Altezza fissa sufficiente (circa 450px del grafico + margini) */
   max-height: 600px;
   opacity: 1;
 }
 
 /* **************************************************
+ * Stile Tabelle e Colori
+ * **************************************************/
+
+/* Rimuove i bordi interni e i bordi della tabella per un aspetto più pulito */
+.table {
+    border-spacing: 0;
+    border: none;
+}
+
+/* Bordi sottili tra le celle */
+.table th, .table td {
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    border-left: 1px solid #dee2e6;
+    border-right: 1px solid #dee2e6;
+}
+
+/* L'intestazione della tabella (table-primary) */
+.table-primary {
+    /* Mantenuto il blu chiaro di Bootstrap come colore secondario per l'header della tabella dati */
+    --bs-table-bg: #cfe2ff;
+}
+
+/* Stile della riga Allarme ATTIVO (table-danger) */
+.table-danger {
+    --bs-table-bg: #ffe0e0; /* Rosso molto chiaro */
+    --bs-table-hover-bg: #fddddd;
+}
+
+/* Bordo sinistro spesso e rosso per evidenziare l'allarme attivo */
+.table-danger.border-start {
+    border-left-color: var(--bs-danger) !important;
+}
+
+/* Assicura che l'header del PLC (custom-bg-primary) abbia angoli arrotondati solo in alto */
+.custom-bg-primary {
+    border-radius: 0.3rem 0.3rem 0 0 !important;
+}
+
+/* **************************************************
  * FIX MARGINI GRAFICO (USANDO :DEEP)
  * **************************************************/
-/* Questo targettizza il div.container ALL'INTERNO del GraficoStoricoAllarmi per rimuovere i margini di Bootstrap */
 .chart-content-container :deep(.container) {
     padding: 0;
     margin: 0;
     max-width: 100%;
-}
-
-.card-body {
-    padding: 1rem;
 }
 </style>

@@ -5,17 +5,22 @@ import SearchBar from "@/components/searchBar.vue";
 import { useWebSocketStore} from '@/stores/webSoket'; // Importa lo store WS
 
 const webSocketStore = useWebSocketStore();
-// Non c'è bisogno di chiamare connect qui, è già fatto in main.ts
+
 </script>
 
 <template>
     <header class="app-header-fixed">
         <div class="header-left">
           <MenuHamburgher></MenuHamburgher>
-          </div>
-        <div class="header-center">
-          <img src="/img/logoApplicazione.png" alt="ModuView Logo" class="app-logo">
         </div>
+
+        <!-- MODIFICA APPLICATA: Impostato 'to="/home"' per reindirizzare alla homepage/dashboard -->
+        <div class="header-center">
+            <router-link to="/home" class="logo-link">
+                <img src="/img/logoApplicazione.png" alt="ModuView Logo" class="app-logo">
+            </router-link>
+        </div>
+
         <MenuAccount></MenuAccount>
     </header>
     <SearchBar></SearchBar>
@@ -35,6 +40,14 @@ const webSocketStore = useWebSocketStore();
 </template>
 
 <style scoped>
+/* Definisci le variabili di colore globali per coerenza */
+:root {
+  /* Palette basata sul colore richiesto: #2596BE (rgba(37, 150, 190)) */
+  --color-primary: #14265a;      /* Header, Titoli, Branding */
+  --color-accent-cta: #004f70;  /* Arancione brillante (CTA) */
+  --color-secondary: #004F70;   /* Blu Scuro (per hover su elementi primari) */
+}
+
 .app-header-fixed {
   position: fixed;
   top: 0;
@@ -48,7 +61,6 @@ const webSocketStore = useWebSocketStore();
   background-color: var(--color-primary);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   z-index: 1000;
-
 }
 
 .header-left {
@@ -64,6 +76,15 @@ const webSocketStore = useWebSocketStore();
   text-align: center;
   padding: 0 0.5rem;
   min-width: 0;
+}
+
+/* NUOVO STILE: Assicura che l'area cliccabile del logo sia pulita */
+.logo-link {
+    text-decoration: none; /* Rimuove la sottolineatura tipica dei link */
+    cursor: pointer;
+    display: inline-block;
+    padding: 0;
+    margin: 0;
 }
 
 .app-logo {
@@ -82,7 +103,7 @@ const webSocketStore = useWebSocketStore();
 }
 
 .app-content-wrapper {
-    padding-top: 100px; /* VALORE DA VERIFICARE! (es. 75px, 80px, 90px) */
+    padding-top: 100px;
     min-height: 100vh;
 }
 </style>

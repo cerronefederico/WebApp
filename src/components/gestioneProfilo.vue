@@ -46,11 +46,16 @@ const utenti = ref([]);
 onMounted(async () => {
   // Applica il tema salvato al mount
   applyTheme(theme.value);
+  // Carica la lista degli utenti
+  await fetchUtenti();
+});
+
+const fetchUtenti = async () => {
   const data = await listUtenti();
   if (data) {
     utenti.value = data;
   }
-});
+}
 
 
 const handleLogout = () => {
@@ -88,6 +93,84 @@ const listUtenti = async () => {
     // Gestione dell'errore (e.g., mostrare un messaggio all'utente)
   }
 };
+const newEmail = ref('');
+const newPassword = ref('');
+let adding = ref(false);
+let deleting = ref(false);
+
+async function addUtente() {
+    // 1. Validazione base
+    if (!newEmail.value.trim() || !newPassword.value.trim()) {
+        alert('Per favore, inserisci sia l\'email che la password.');
+        return;
+    }
+
+    const emailToSend = `${newEmail.value}@ing.com`; // Ricostruisce l'email completa
+
+    try {
+      adding.value=true;
+      const response = await fetch('http://localhost:8000/api/register', { // Endpoint FastAPI per la registrazione
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // N.B. In un'applicazione reale, dovresti inviare qui il token di accesso
+                // dell'amministratore per autorizzare questa operazione!
+            },
+            body: JSON.stringify({
+                email: emailToSend,
+                password: newPassword.value,
+                // Aggiungere qui eventuali altri campi come 'ruolo' se necessario
+            }),
+      });
+
+        // 2. Gestione della risposta
+        if (response.ok) {
+
+            // Aggiorna la lista degli utenti
+            await fetchUtenti();
+            adding.value= false;
+
+            alert(`Utente ${emailToSend} aggiunto con successo!`);
+            // Resetta i campi input
+            newEmail.value = '';
+            newPassword.value = '';
+
+
+        } else {
+            // Estrai l'errore dal corpo della risposta se possibile
+            const errorData = await response.json();
+            alert(`Errore nell'aggiunta utente: ${errorData.detail || response.statusText}`);
+            adding.value = false;
+        }
+
+    } catch (error) {
+        adding = false;
+        alert('Si è verificato un errore di connessione con il server.');
+    }
+}
+
+async function deleteUtente(email) {
+  try {
+     const response = await fetch('http://localhost:8000/api/delete', { // Endpoint FastAPI per la registrazione
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // N.B. In un'applicazione reale, dovresti inviare qui il token di accesso
+                // dell'amministratore per autorizzare questa operazione!
+            },
+            body: JSON.stringify({
+                email: email,
+                password: '',
+            }),
+        });
+     if (response.ok) {
+       await fetchUtenti();
+       alert(`Utente ${email} deleted`);
+     }
+  }catch(error) {
+    alert('Si è verificato un errore di connessione con il server.');
+  }
+}
 </script>
 
 <template>
@@ -161,7 +244,11 @@ const listUtenti = async () => {
         <div class="card-body">
           <div class="container-fluid overflow-auto" style="max-height: 500px;">
           <ul class="list-group">
-            <li v-for="utente in utenti" class="list-group-item">{{utente["email"]}}
+            <li v-for="utente in utenti" class="list-group-item">
+              <div class="d-flex mb-3">
+              <div class="me-auto p-2">{{utente["email"]}}</div>
+              <div class="p-2"><button v-on:click="deleteUtente(utente['email'])" v-if="utente['email'] !== 'admin@ing.com'" class="bi bi-slash-circle bg-white"></button></div>
+            </div>
             </li>
           </ul>
           </div>
@@ -187,18 +274,20 @@ const listUtenti = async () => {
         <label for="inputEmail" class="form-label visually-hidden">Email</label>
 
         <div class="input-group">
-          <input type="text" class="form-control" id="inputEmail" placeholder="nomeutente">
+          <input type="text" class="form-control" id="inputEmail" v-model="newEmail" placeholder="nomeutente">
 
           <span class="input-group-text">@ing.com</span>
         </div>
       </div>
       <div>
         <label for="inputPassword" class="form-label visually-hidden">Password</label>
-        <input type="text" class="form-control" id="inputPassword" placeholder="Password">
+        <input type="text" class="form-control" id="inputPassword" v-model="newPassword" placeholder="Password">
       </div>
       <div>
-        <button type="button" class="btn btn-primary">
+        <button v-on:click="addUtente" type="button" class="btn btn-primary">
           Conferma
+          <span v-if="adding" class="spinner-grow spinner-grow-sm" aria-hidden="true"></span>
+          <span class="visually-hidden" role="status">Loading...</span>
         </button>
       </div>
 

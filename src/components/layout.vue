@@ -21,7 +21,20 @@ const webSocketStore = useWebSocketStore();
             </router-link>
         </div>
 
-        <MenuAccount></MenuAccount>
+        <!-- Area destra: Pulsante Cerca e Menu Account -->
+        <div class="header-right-actions">
+          <!-- NUOVO PULSANTE RICERCA -->
+          <button
+            class="btn btn-search-header me-3"
+            data-bs-toggle="modal"
+            data-bs-target="#searchModal"
+            title="Cerca PLC"
+          >
+            <i class="bi bi-search fs-5"></i>
+          </button>
+
+          <MenuAccount></MenuAccount>
+        </div>
     </header>
     <SearchBar></SearchBar>
   <div v-if="webSocketStore.isDataReady">
@@ -71,6 +84,13 @@ const webSocketStore = useWebSocketStore();
   min-width: 0;
 }
 
+/* Nuovo contenitore per il pulsante di ricerca e MenuAccount */
+.header-right-actions {
+  display: flex;
+  align-items: center;
+}
+
+
 .header-center {
   flex-grow: 1;
   text-align: center;
@@ -92,14 +112,24 @@ const webSocketStore = useWebSocketStore();
   width: auto;
   filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
 }
-.btn-outline-dark.search-btn {
-    color: white !important;
-    border-color: white !important;
-    transition: all 0.3s ease;
+
+/* Stile per il NUOVO pulsante di ricerca nell'header */
+.btn-search-header {
+    background: transparent;
+    color: white; /* Icona bianca su sfondo scuro */
+
+    /* MODIFICHE RICHIESTE: Bordo bianco */
+    border: 1px solid white;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
-.btn-outline-dark.search-btn:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    color: white !important;
+
+.btn-search-header:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Leggero sfondo all'hover */
+    color: white;
+    border-color: #f0f0f0; /* Bordo leggermente più chiaro all'hover */
 }
 
 .app-content-wrapper {

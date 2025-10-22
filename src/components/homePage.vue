@@ -229,8 +229,17 @@ const formattedTime = computed(() => {
 
     <aside class="sidebar-right">
         <h3 class="sidebar-title">Strumenti</h3>
-        <button class="btn btn-primary w-100 mb-2" data-bs-toggle="modal" data-bs-target="#allarmOnModal">Allarmi attivi</button>
-      <p class="sidebar-title">Filtra le card PLC:</p>
+
+        <!-- PULSANTE "Allarmi attivi" CON ICONA DI NOTIFICA CONDIZIONALE -->
+        <button class="btn btn-primary w-100 mb-4 position-relative" data-bs-toggle="modal" data-bs-target="#allarmOnModal">
+            Allarmi attivi
+            <span v-if="totalAlerts > 0" class="notification-icon">
+                <i class="bi bi-bell-fill"></i>
+            </span>
+        </button>
+
+
+        <h3 class="sidebar-title">Filtra le card PLC:</h3>
         <select class="form-select" v-model="selectedFilter">
             <option value="TUTTI">Mostra Tutti</option>
             <option value="ACCESE">Solo Accese</option>
@@ -245,6 +254,7 @@ const formattedTime = computed(() => {
     </aside>
   </div>
   <AllarmOnModal></AllarmOnModal>
+  <!-- RIMOSSO IL MODALE SearchBar -->
 </template>
 
 <style scoped>
@@ -260,7 +270,7 @@ const formattedTime = computed(() => {
   --color-background: #F0F8FF; /* Sfondo generale azzurrognolo chiaro */
   --color-card-bg: #FFFFFF;    /* Sfondo elementi (Sidebar, Card) */
   --color-text-dark: #212529; /* Testo principale quasi nero */
-  --color-border: #B8DCE9;  /* Bordo molto chiaro */
+  --color-border: #FFFFFF;  /*FFF Bordo molto chiaro */
   --color-text-muted: #6c757d;
 
   /* Colori di Stato Standard (Bootstrap - armonizzati) */
@@ -370,9 +380,6 @@ const formattedTime = computed(() => {
     border-right: none;
 }
 
-/* **************************************************
- * STILI BOTTONI E ALTRI ELEMENTI (Mantenuto)
- * **************************************************/
 
 .btn-primary {
     background-color: var(--color-accent-cta) !important;
@@ -385,6 +392,44 @@ const formattedTime = computed(() => {
     background-color: #004f70 !important;
     border-color: #004f70 !important;
     transform: translateY(-1px);
+}
+
+/* Stile per l'icona di notifica (Badge) */
+.notification-icon {
+    position: absolute;
+    top: -5px; /* Sposta leggermente sopra il bordo del pulsante */
+    right: -5px; /* Sposta leggermente a destra */
+
+    /* Stile del badge/icona */
+    color: white;
+    background-color: var(--bs-danger); /* Usa il rosso per l'allarme */
+    border-radius: 50%;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    line-height: 1;
+    z-index: 10;
+
+    /* Icona campanella Bootstrap */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; /* Dimensione fissa per l'icona */
+    height: 28px;
+
+    /* Animazione leggera per attirare l'attenzione */
+    animation: pulse-danger 1.5s infinite;
+}
+
+/* Effetto al passaggio del mouse sul pulsante */
+.btn-primary:hover .notification-icon {
+    transform: scale(1.1);
+    transition: transform 0.2s ease;
+}
+
+@keyframes pulse-danger {
+    0% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
 }
 
 .app-header-fixed {

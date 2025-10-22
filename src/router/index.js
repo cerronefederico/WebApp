@@ -1,5 +1,3 @@
-// /src/router/index.js (Versione Ripristinata)
-
 import { createRouter, createWebHistory } from 'vue-router'
 
 import layout from "@/components/layout.vue";
@@ -8,6 +6,8 @@ import HomePage from "@/components/homePage.vue";
 import plcPage from "@/components/plcPage.vue";
 import gestioneProfilo from "@/components/gestioneProfilo.vue";
 import allarmPage from "@/components/allarmPage.vue"
+// ⭐ IMPORTAZIONE AGGIUNTA
+import logWarningAllarmi from "@/components/logWarningAllarmi.vue"
 
 
 const routes = [
@@ -53,6 +53,12 @@ const routes = [
           path:'alarms',
           name: 'AllarmPage',
           component: allarmPage
+      },
+      // ⭐ NUOVA ROTTA AGGIUNTA PER LO STORICO ALLARMI
+      {
+        path: '/history/alarms', // Usa il percorso completo se deve essere navigabile dal menu principale
+        name: 'HistoricAlarms',
+        component: logWarningAllarmi
       }
     ]
   }

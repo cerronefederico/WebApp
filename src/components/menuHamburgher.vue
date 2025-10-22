@@ -1,5 +1,44 @@
+<script setup>
+import { nextTick } from 'vue'; // Importiamo nextTick per garantire l'esecuzione dopo l'update del DOM
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+/**
+ * Chiude il pannello Offcanvas (simulando un click sul bottone di chiusura di Bootstrap).
+ * Usiamo nextTick per assicurarci che il routing sia completato o in corso prima di chiudere.
+ */
+const closeOffcanvas = () => {
+  // L'ID del tuo offcanvas è 'menuHamburger'
+  const offcanvasElement = document.getElementById('menuHamburger');
+
+  if (offcanvasElement) {
+    // Trova il bottone di chiusura all'interno dell'offcanvas
+    const closeButton = offcanvasElement.querySelector('[data-bs-dismiss="offcanvas"]');
+
+    // Simula il click sul bottone per attivare la chiusura gestita da Bootstrap JS
+    if (closeButton) {
+      closeButton.click();
+    }
+  }
+};
+
+/**
+ * Gestisce la navigazione e chiude il menu.
+ * @param path Il percorso della rotta.
+ */
+const navigateAndClose = (path) => {
+  // Esegue la navigazione
+  router.push(path);
+
+  // Chiude l'offcanvas subito dopo la navigazione
+  closeOffcanvas();
+};
+</script>
+
 <template>
-  <div class="z-index-100 menu-wrapper">
+  <!-- Rimosso z-index dal div esterno in quanto è gestito dall'offcanvas -->
+  <div class="menu-wrapper">
     <button
       class="btn btn-outline-dark btn-lg"
       type="button"
@@ -28,45 +67,97 @@
 
       <div class="offcanvas-body p-0">
 
+        <!-- Sezione Dashboard -->
         <div class="menu-section">
             <h6 class="menu-title">Dashboard</h6>
             <ul class="list-group list-group-flush custom-list">
                 <li class="list-group-item list-group-item-action">
-                    <router-link to="/home" class="menu-item"><i class="bi bi-house-door"></i> Home (PLC Status)</router-link>
+                    <!-- Modificato: @click chiama la funzione -->
+                    <router-link
+                        to="/home"
+                        class="menu-item"
+                        @click.prevent="navigateAndClose('/home')"
+                    >
+                        <i class="bi bi-house-door"></i> Home (PLC Status)
+                    </router-link>
                 </li>
                 <li class="list-group-item list-group-item-action">
-                    <router-link to="/home/alarms" class="menu-item"><i class="bi bi-bell"></i> Allarmi Attivi</router-link>
+                    <!-- Modificato: @click chiama la funzione -->
+                    <router-link
+                        to="/home/alarms"
+                        class="menu-item"
+                        @click.prevent="navigateAndClose('/home/alarms')"
+                    >
+                        <i class="bi bi-bell"></i> Allarmi Attivi
+                    </router-link>
                 </li>
             </ul>
         </div>
 
         <hr class="menu-divider">
 
+        <!-- Sezione Storici e Analisi -->
         <div class="menu-section">
             <h6 class="menu-title">Storici e Analisi</h6>
             <ul class="list-group list-group-flush custom-list">
                 <li class="list-group-item list-group-item-action">
-                    <router-link to="/history/plc-data" class="menu-item"><i class="bi bi-database-up"></i> Dati di Produzione</router-link>
+                    <!-- Modificato: @click chiama la funzione -->
+                    <router-link
+                        to="/history/plc-data"
+                        class="menu-item"
+                        @click.prevent="navigateAndClose('/history/plc-data')"
+                    >
+                        <i class="bi bi-database-up"></i> Dati di Produzione
+                    </router-link>
                 </li>
                 <li class="list-group-item list-group-item-action">
-                    <router-link to="/history/alarms" class="menu-item"><i class="bi bi-clock-history"></i> Storico Allarmi</router-link>
+                    <!-- Modificato: @click chiama la funzione -->
+                    <router-link
+                        to="/history/alarms"
+                        class="menu-item"
+                        @click.prevent="navigateAndClose('/history/alarms')"
+                    >
+                        <i class="bi bi-clock-history"></i> Storico Allarmi
+                    </router-link>
                 </li>
                 <li class="list-group-item list-group-item-action">
-                    <router-link to="/report" class="menu-item"><i class="bi bi-bar-chart"></i> Reportistica Completa</router-link>
+                    <!-- Modificato: @click chiama la funzione -->
+                    <router-link
+                        to="/report"
+                        class="menu-item"
+                        @click.prevent="navigateAndClose('/report')"
+                    >
+                        <i class="bi bi-bar-chart"></i> Reportistica Completa
+                    </router-link>
                 </li>
             </ul>
         </div>
 
         <hr class="menu-divider">
 
+        <!-- Sezione Sistema -->
         <div class="menu-section">
             <h6 class="menu-title">Sistema</h6>
             <ul class="list-group list-group-flush custom-list">
                 <li class="list-group-item list-group-item-action">
-                    <router-link to="/user-profile" class="menu-item"><i class="bi bi-person-circle"></i> Il Mio Profilo</router-link>
+                    <!-- Modificato: @click chiama la funzione -->
+                    <router-link
+                        to="/user-profile"
+                        class="menu-item"
+                        @click.prevent="navigateAndClose('/user-profile')"
+                    >
+                        <i class="bi bi-person-circle"></i> Il Mio Profilo
+                    </router-link>
                 </li>
                 <li class="list-group-item list-group-item-action">
-                    <router-link to="/settings" class="menu-item"><i class="bi bi-gear"></i> Impostazioni di Sistema</router-link>
+                    <!-- Modificato: @click chiama la funzione -->
+                    <router-link
+                        to="/settings"
+                        class="menu-item"
+                        @click.prevent="navigateAndClose('/settings')"
+                    >
+                        <i class="bi bi-gear"></i> Impostazioni di Sistema
+                    </router-link>
                 </li>
             </ul>
         </div>
@@ -75,10 +166,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-// Nessuna logica complessa necessaria
-</script>
 
 <style scoped>
 /* Il menu offcanvas deve adottare i colori del tema globale */

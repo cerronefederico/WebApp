@@ -418,7 +418,7 @@ async function deleteUtente(email) {
     --color-background-secondary: #f8f9fa;
     --color-card-bg: #ffffff;
     --color-text-primary: #343a40;
-    --color-border: #e0e0e0;
+    --color-border: rgb(213, 210, 210);
     --color-accent: #007bff;
     --color-accent-dark: #0056b3;
 }
@@ -432,7 +432,7 @@ async function deleteUtente(email) {
     --color-background-secondary: #3c3c3c;
     --color-card-bg: #343434;
     --color-text-primary: #f0f0f0;
-    --color-border: #555555;
+    --color-border: #ffffff;
     --color-accent: #81c784;
     --color-accent-dark: #66bb6a;
 }

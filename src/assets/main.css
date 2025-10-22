@@ -9,9 +9,9 @@
   --color-secondary: #004F70;   /* Blu Scuro Profondo (per hover, elementi secondari) */
 
   --color-background: #F0F8FF; /* Sfondo generale azzurrognolo chiaro */
-  --color-card-bg: #FFFFFF;    /* Sfondo elementi (Sidebar, Card) */
+  --color-card-bg: rgba(60, 63, 64, 0);    /* Sfondo elementi (Sidebar, Card) */
   --color-text-dark: #212529; /* Testo principale quasi nero */
-  --color-border: #B8DCE9;  /* Bordo molto chiaro (basato sul primario) */
+  --color-border: #ffffff;  /* Bordo molto chiaro (basato sul primario) */
   --color-text-muted: #6c757d;
 
   /* 🟢 COLRI DI STATO (Bootstrap - armonizzati) */

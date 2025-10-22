@@ -69,7 +69,7 @@ const formattedLastUpdate = computed(() => {
 
 <template>
 <div class="card shadow-sm">
-   <div class="card-header bg-primary text-white">
+   <div class="card-header text-white">
       <div class="hstack gap-3">
   <div class="p-2">Elenco Allarmi</div>
   <div class="ms-auto">Ultimo Aggiornamento: {{formattedLastUpdate}}</div>
@@ -147,5 +147,8 @@ const formattedLastUpdate = computed(() => {
 .status-dot.dot-active {
     background-color: var(--bs-danger, #dc3545);
     box-shadow: 0 0 8px var(--bs-danger, #dc3545);
+}
+.card-header{
+  background-color: #14265a;
 }
 </style>

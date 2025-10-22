@@ -1,17 +1,17 @@
 <template>
-<div class="card shadow-sm">
 
-    <div class="card-header bg-primary text-white">
+
+    <div class="card-header text-dark" style="background: #ffffff">
       <div class="hstack gap-3">
-  <div class="p-2">Dati Contatori</div>
-  <div class="ms-auto">Ultimo Aggiornamento: {{formattedLastUpdate}}</div>
+        <div class="p-0"><strong>Dati Produzione Macchina:</strong></div>
+        <div class="ms-auto"><strong>Ultimo Aggiornamento: {{formattedLastUpdate}}</strong></div>
   </div>
     </div>
 
-    <div class="row g-4 p-2">
+    <div class="row g-4 p-1">
 
       <div class="col-12 col-md-6">
-        <div class="card bg-primary text-white shadow">
+        <div class="card text-white shadow" style="background: #14265a">
           <div class="card-body">
             <h5 class="card-title">Produzione Totale</h5>
             <p class="card-text fs-1 fw-bold">{{props.plcStore.getContatori[0].contatorepezzitotale}}</p>
@@ -20,7 +20,7 @@
       </div>
 
       <div class="col-12 col-md-6">
-        <div class="card bg-info text-white shadow">
+        <div class="card text-white shadow" style="background: #14265a">
           <div class="card-body">
             <h5 class="card-title">Produzione Parziale</h5>
             <p class="card-text fs-1 fw-bold">{{props.plcStore.getContatori[0].contatorepezziparziale}}</p>
@@ -30,13 +30,13 @@
 
       <div class="col-12 col-md-6">
         <div class="card shadow">
-          <div class="card-header bg-light">
+          <div class="card-header text-white shadow" style="background: #14265a">
             Produzione Oraria
           </div>
           <div class="card-body text-center ">
             <apexchart
               type="radialBar"
-              height="300"
+              height="340"
               :options="gaugeOptions"
               :series="gaugeSeries"
             ></apexchart>
@@ -46,7 +46,7 @@
 
       <div class="col-12 col-md-6">
         <div class="card shadow">
-          <div class="card-header bg-light">
+          <div class="card-header text-white shadow" style="background: #14265a">
             Temperatura CPU con Allarme
           </div>
           <div class="card-body">
@@ -61,7 +61,6 @@
       </div>
 
     </div>
-  </div>
 </template>
 
 <script setup>
@@ -145,7 +144,7 @@ const gaugeOptions = {
             shade: 'dark',
             type: 'horizontal',
             shadeIntensity: 0.5,
-            gradientToColors: ['#ABE5A1'],
+            gradientToColors: ['#14265a'],
             inverseColors: true,
             opacityFrom: 1,
             opacityTo: 1,
@@ -177,6 +176,7 @@ const columnOptions = {
             }
         }]
     },
+  colors:['#14265a'],
     plotOptions: {
         bar: { columnWidth: '40%', distributed: true }
     },
@@ -191,4 +191,25 @@ const columnOptions = {
 .card-text {
   padding-top: 10px;
 }
+.card-header.bg-white {
+    background-color: #FFFFFF !important;
+
+    /* Rimuovi completamente il bordo/linea di separazione se presente */
+    border-bottom: none !important;
+
+    /* Rimuovi l'ombra che era stata aggiunta in precedenza per la separazione */
+    box-shadow: none !important;
+
+    /* Aumenta il padding per dare più aria, se necessario */
+    padding: 1.5rem 1.5rem 0.5rem 1.5rem !important;
+
+    /* Allinea il testo se necessario */
+    text-align: left;
+}
+
+/* Regola per i titoli delle card KPI (Produzione Totale/Parziale), che rimangono bianche su sfondo blu */
+.custom-primary-bg .card-title {
+  color: white;
+}
+
 </style>

@@ -80,8 +80,13 @@ const pallinoStyle = computed(() => {
 });
 
 
-const plcData = ref({
-    plcImageUrl: "https://placehold.co/150x150/007bff/ffffff?text=PLC",
+const plcData = computed(() => {
+    switch (currentPlcId.value) {
+        case 'PLC1': return '/img/provaPlcCard.png';
+        case 'PLC2': return '/img/provaPlcCard1.png';
+        case 'PLC3': return '/img/provaPlcCard2.png';
+        default: return 'https://placehold.co/150x150/007bff/ffffff?text=PLC';
+    }
 });
 
 
@@ -107,9 +112,8 @@ const plcStato = computed(() => {
 
       <div class="col-12 col-lg-4 mb-3">
         <div class="card shadow-sm fixed-height-card">
-          <div class="card-body text-center">
-
-            <img :src="plcData.plcImageUrl" alt="Immagine PLC" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+          <div class="card-body text-center" style="background:#ffffff">
+            <img :src="plcData" alt="Immagine PLC" class="img-fluid rounded-circle mb-3" style="width: 250px; height: 250px; object-fit: cover;">
 
             <h4 class="card-title text-primary">{{ currentPlcId }}</h4>
             <ul class="list-group list-group-flush text-start">
@@ -186,14 +190,14 @@ const plcStato = computed(() => {
         <div class="card shadow-sm">
           <div class="card-header p-0">
             <ul class="nav nav-pills mb-3" role="tablist">
-              <li class="nav-item" role="presentation">
+              <li class="nav-item ms-2" role="presentation">
                 <button class="nav-link active" id="contatori-tab" data-bs-toggle="pill" data-bs-target="#contatori" type="button" role="tab" aria-controls="contatori" aria-selected="true">Contatori</button>
               </li>
-              <li class="nav-item" role="presentation">
+              <li class="nav-item ms-2" role="presentation">
                 <button class="nav-link" id="warning-tab" data-bs-toggle="pill" data-bs-target="#warning" type="button" role="tab" aria-controls="warning" aria-selected="false">Warning</button>
               </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" id="allarm-tab" data-bs-toggle="pill" data-bs-target="#allarm" type="button" role="tab" aria-controls="allarm" aria-selected="false">Allarm</button>
+              <li class="nav-item ms-2" role="presentation">
+                <button class="nav-link " id="allarm-tab" data-bs-toggle="pill" data-bs-target="#allarm" type="button" role="tab" aria-controls="allarm" aria-selected="false">Allarm</button>
               </li>
             </ul>
           </div>
@@ -211,40 +215,98 @@ const plcStato = computed(() => {
         </div>
       </div>
     </div>
-  <StatistichePlc :plc-store="currentPlcStore"></StatistichePlc>
 </div>
 </template>
 
 <style scoped>
-.container-fluid {
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
-}
-.card {
-    border: none;
-    border-radius: 10px;
-}
-.card-header-tabs .nav-link {
-    color: #6c757d;
-    border: none;
-}
-.card-header-tabs .nav-link.active {
-    color: #007bff;
-    border-bottom: 3px solid #007bff;
-    background-color: transparent;
+:root {
+  --color-primary: #14265a;
+  --color-border: var(--color-primary);  /* ⬅️ NUOVO: Bordo uguale al Primary Blue */
+  --color-accent-cta: #004f70; /* Mantenuto per hover */
+  --color-card-bg: #ffffff;
 }
 
-/* ⭐ NUOVA CLASSE: Forzare l'altezza massima per impedire lo stretching */
-/* L'altezza deve essere impostata per adattarsi al contenuto fisso della card. */
+.col-12 .card, .col-md-6 .card {
+    /* Il bordo è ora blu scuro */
+    border: 1px solid var(--color-border);
+
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25) !important;
+    border-radius: 8px;
+    height: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.nav-link{
+  color:white;
+  background-color: #1f3a8e;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.nav-link.active {
+    background-color: #14265a;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.nav-link:hover{
+  color:#f0f0f0;
+  background-color: #14265a;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 .fixed-height-card {
-    /* Impostando max-height, la card non può crescere oltre i suoi contenuti naturali. */
-    /* La sua altezza finale sarà determinata dai suoi contenuti, non dalla riga. */
     max-height: 100%;
 }
 
-/* Forzare la card a sinistra ad allinearsi in alto se necessario */
 .row {
     align-items: flex-start;
 }
+.card {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background-color: var(--color-card-bg);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+.card-title {
+    color: var(--color-primary) !important;
+    font-weight: 700;
+}
+
+/* Assicurati che non ci siano margini o bordi strani sulla tab-content */
+.tab-content {
+    padding: 1rem; /* Aggiunge spazio intorno al contenuto del tab */
+}
+.img-fluid.rounded-circle {
+    /* Ombra e bordo sul cerchio dell'immagine */
+    box-shadow: 0 0 15px rgba(20, 38, 90, 0.3);
+    border: 3px solid var(--color-primary);
+    padding: 3px;
+}
+.nav-pills {
+    padding: 0;
+    margin-bottom: 0 !important;
+
+    /* CRUCIALE: Rendi il contenitore un flexbox */
+    display: flex;
+    /* CRUCIALE: Centra orizzontalmente i pulsanti (i nav-item) */
+    justify-content: center;
+    /* Aggiungi un piccolo padding orizzontale al contenitore UL per non toccare i bordi */
+    padding: 0.5rem 0;
+}
+.col-lg-8 > .card > .card-header {
+    background-color: var(--color-card-bg);
+
+    /* CRUCIALE: Forza la rimozione del bordo inferiore */
+    border-bottom: none !important;
+
+    /* Ombra sottile per mantenere una leggera separazione visiva senza bordo */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+
+    /* Rimuovi il padding dal card-header per lasciare la gestione al nav-pills */
+    padding: 0 !important;
+}
+
 </style>

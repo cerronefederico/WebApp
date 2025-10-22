@@ -36,7 +36,7 @@ const stato = computed(() => props.plcStore.getStati[0]);
 <template>
 <div class="card shadow-sm">
 
-    <div class="card-header bg-primary text-white">
+    <div class="card-header text-white">
       <div class="hstack gap-3">
   <div class="p-2">Elenco Warning</div>
   <div class="ms-auto">Ultimo Aggiornamento: {{formattedLastUpdate}}</div>
@@ -163,6 +163,8 @@ const stato = computed(() => props.plcStore.getStati[0]);
     background-color: var(--bs-warning, #198754);
     box-shadow: 0 0 8px var(--bs-warning, #dc3545);
 }
-
+.card-header{
+  background-color: #14265a;
+}
 
 </style>

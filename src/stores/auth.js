@@ -27,11 +27,11 @@ export const useAuthStore = defineStore('auth', {
     /**
      * Imposta il token di accesso E l'email dell'utente, ricevuti dal server.
      * @param {string} authToken - Il token JWT.
-     * @param {string} userEmail - L'email dell'utente (proveniente dalla risposta del server).
+     * @param {string} user - L'email dell'utente (proveniente dalla risposta del server).
      */
-    setToken(authToken, userEmail) {
+    setToken(authToken, user) {
       this.token = authToken;
-      this.user =  userEmail; // Popola lo stato 'user' con l'email
+      this.user =  user; // Popola lo stato 'user' con l'email
 
       // Salva entrambi i dati in Local Storage per la persistenza
       localStorage.setItem(AUTH_TOKEN_KEY, authToken);

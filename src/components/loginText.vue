@@ -30,15 +30,21 @@
 
           <div class="mb-3">
             <label for="password" class="form-label">Password</label>
+            <div class="input-group">
             <input
-              type="password"
+              :type="flagPassword ? 'text' : 'password'"
               class="form-control"
               :class="{'is-invalid' : showError}"
               id="password"
               v-model="password"
               required
               placeholder="Inserisci la password"
-              :disabled="isLoggingIn" />
+              :disabled="isLoggingIn">
+            <span>
+              <i v-if="flagPassword" v-on:click="mostraPassword" class="btn bi bi-eye"></i>
+              <i v-if="!flagPassword" v-on:click="mostraPassword" class="btn bi bi-eye-slash"></i>
+            </span>
+            </div>
           </div>
            <div v-if="showError" class="invalid-feedback d-block mb-3 animate__animated animate__fadeIn">
               Credenziali non valide. Riprova.
@@ -63,7 +69,8 @@
 <script>
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
-import { useRouter } from 'vue-router'; // Aggiungiamo useRouter per l'accesso reattivo al router
+import { useRouter } from 'vue-router';
+import {ref} from "vue"; // Aggiungiamo useRouter per l'accesso reattivo al router
 
 export default {
   name: 'LoginComponent',
@@ -83,7 +90,8 @@ export default {
       password: '',
       showError: false,
       isLoggingIn: false,
-      loginUrl: 'http://localhost:8000/api/login'
+      loginUrl: 'http://localhost:8000/api/login',
+      flagPassword: false,
     };
   },
   methods: {
@@ -122,11 +130,11 @@ export default {
           const data = await response.json();
 
           const accessToken = data.access_token;
-          const userEmail = data.user_email; // ⭐ NUOVO: Estrai l'email
+          const user = data.user; // ⭐ NUOVO: Estrai l'email
 
-          if (accessToken && userEmail) {
+          if (accessToken && user) {
             // ⭐ PUNTO CHIAVE: Chiama setToken con DUE argomenti
-            this.authStore.setToken(accessToken, userEmail);
+            this.authStore.setToken(accessToken, user);
 
             // Usiamo il router da setup per una migliore pratica in Vue 3
             this.router.push('/home');
@@ -156,7 +164,11 @@ export default {
       } finally {
         this.isLoggingIn = false;
       }
-    }
+    },
+
+    mostraPassword() {
+      this.flagPassword = !this.flagPassword;
+    },
   }
 };
 </script>

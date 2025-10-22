@@ -35,7 +35,7 @@ const logoutAndRedirect = () => {
   router.push('/');
 };
 const displayedUser = computed(() => {
-  const user = authStore.currentUser;
+  const user = authStore.currentUser.email || '';
     return user.slice(0, -8);
 });
 </script>

@@ -8,10 +8,10 @@ const router = useRouter();
 
 // 1. Definisce la chiave univoca per localStorage
 // Prende l'email direttamente dallo store. Se lo store è null, usa una stringa vuota o un fallback.
-const userIdKey = computed(() => authStore.currentUser || '');
+const userIdKey = computed(() => authStore.currentUser.email || '');
 
 const ruolo = computed(() => {
-    const userIdentifier = authStore.currentUser;
+    const userIdentifier = authStore.currentUser.email;
 
     // Verifica se l'identificativo utente (l'email in questo caso) è esattamente 'admin' (case-insensitive)
     if (userIdentifier && userIdentifier.toLowerCase() === 'admin@ing.com') {
@@ -96,7 +96,7 @@ const listUtenti = async () => {
 const newEmail = ref('');
 const newPassword = ref('');
 let adding = ref(false);
-let deleting = ref(false);
+let deleting = ref('');
 
 async function addUtente() {
     // 1. Validazione base
@@ -151,6 +151,7 @@ async function addUtente() {
 
 async function deleteUtente(email) {
   try {
+    deleting.value = email;
      const response = await fetch('http://localhost:8000/api/delete', { // Endpoint FastAPI per la registrazione
             method: 'POST',
             headers: {
@@ -165,12 +166,67 @@ async function deleteUtente(email) {
         });
      if (response.ok) {
        await fetchUtenti();
+       deleting.value = '';
        alert(`Utente ${email} deleted`);
      }
   }catch(error) {
+    deleting.value='';
     alert('Si è verificato un errore di connessione con il server.');
   }
 }
+
+const flagPassword = ref(false);
+
+function mostraPassword() {
+  flagPassword.value = !flagPassword.value;
+}
+function mostraPassword1() {
+  flagPassword1.value = !flagPassword1.value;
+}
+
+const resetPassword = ref('');
+const flagResetPassword = ref(false);
+const flagPassword1 = ref(false);
+
+async function reimpostaPassword() {
+  if (resetPassword.value.trim()==="") {
+    alert("password vuota");
+    return null;
+  }
+  try {
+    flagResetPassword.value=true;
+    const response = await fetch('http://localhost:8000/api/cangePassword', { // Endpoint FastAPI per la registrazione
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // N.B. In un'applicazione reale, dovresti inviare qui il token di accesso
+        // dell'amministratore per autorizzare questa operazione!
+      },
+      body: JSON.stringify({
+        email: authStore.currentUser.email,
+        password: resetPassword.value,
+      }),
+    });
+    if (response.ok) {
+      alert("password modificata");
+      authStore.logout();
+      router.push('/');
+      flagResetPassword.value=false;
+    }else {
+      alert("errore");
+      flagResetPassword.value=false;
+    }
+
+  }catch(error) {
+    alert("errore");
+    flagResetPassword.value=false;
+  }
+
+}
+
+
+
+
 </script>
 
 <template>
@@ -198,7 +254,23 @@ async function deleteUtente(email) {
     <div v-if="activeTab === 'info'" class="tab-content">
       <h3 class="section-title">Informazioni Personali</h3>
       <div class="info-group">
-        <label>Email:</label> <span>{{ authStore.currentUser }}</span>
+        <label>Email:</label> <span>{{ authStore.currentUser.email }}</span>
+      </div>
+      <div class="info-group align-items-center">
+        <label>Password:</label>
+      <div class="form-control d-flex">
+
+        <span v-if="!flagPassword" class="text-secondary">
+            <span v-for="i in authStore.currentUser.password.length" :key="i">*</span>
+        </span>
+        <span v-if="flagPassword">{{ authStore.currentUser.password }}</span>
+
+        <div class="ms-auto">
+            <button v-if="flagPassword" @click="mostraPassword" class="btn p-0 bi bi-eye" type="button"></button>
+
+            <button v-if="!flagPassword" @click="mostraPassword" class="btn p-0 bi bi-eye-slash" type="button"></button>
+        </div>
+    </div>
       </div>
       <div class="info-group">
         <label>Livello Accesso:</label>
@@ -226,8 +298,14 @@ async function deleteUtente(email) {
 
       <div class="password-form-box">
         <p class="text-muted">Il cambio password richiede una re-autenticazione.</p>
-        <input type="password" placeholder="Nuova Password" class="form-control mb-3">
-        <button class="btn-secondary">Aggiorna Password</button>
+        <div class="input-group">
+          <div class="d-flex">
+        <input :type="flagPassword1 ? 'text' : 'password'" placeholder="Nuova Password" class="form-control mb-3" v-model="resetPassword">
+              <i v-if="flagPassword1" v-on:click="mostraPassword1" class="btn bi bi-eye"></i>
+              <i v-if="!flagPassword1" v-on:click="mostraPassword1" class="btn bi bi-eye-slash"></i>
+          </div>
+        </div>
+        <button v-on:click="reimpostaPassword" class="btn-secondary">Aggiorna Password</button>
       </div>
 
       <hr class="my-4">
@@ -245,9 +323,13 @@ async function deleteUtente(email) {
           <div class="container-fluid overflow-auto" style="max-height: 500px;">
           <ul class="list-group">
             <li v-for="utente in utenti" class="list-group-item">
-              <div class="d-flex mb-3">
-              <div class="me-auto p-2">{{utente["email"]}}</div>
-              <div class="p-2"><button v-on:click="deleteUtente(utente['email'])" v-if="utente['email'] !== 'admin@ing.com'" class="bi bi-slash-circle bg-white"></button></div>
+              <div class="d-flex align-items-center">
+              <div class="me-auto ">{{utente["email"]}}</div>
+            <div class="d-flex align-items-center"> <div v-if="deleting === utente['email']" class="spinner-border" role="status">
+                 <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <button v-on:click="deleteUtente(utente['email'])" v-if="utente['email'] !== 'admin@ing.com'" class="bi bi-slash-circle bg-white ms-1"></button>
+          </div>
             </div>
             </li>
           </ul>
@@ -418,7 +500,7 @@ async function deleteUtente(email) {
     --color-background-secondary: #f8f9fa;
     --color-card-bg: #ffffff;
     --color-text-primary: #343a40;
-    --color-border: rgb(213, 210, 210);
+    --color-border: rgb(213,210,210);
     --color-accent: #007bff;
     --color-accent-dark: #0056b3;
 }

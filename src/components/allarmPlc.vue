@@ -71,7 +71,8 @@ const formattedLastUpdate = computed(() => {
 <div class="card shadow-sm">
    <div class="card-header text-white">
       <div class="hstack gap-3">
-  <div class="p-2">Elenco Allarmi</div>
+  <div class="p-2">Elenco Allarmi
+  <i class="bi bi-shield-fill-exclamation"></i></div>
   <div class="ms-auto">Ultimo Aggiornamento: {{formattedLastUpdate}}</div>
   </div>
     </div>

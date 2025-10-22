@@ -13,7 +13,8 @@
       <div class="col-12 col-md-6">
         <div class="card text-white shadow" style="background: #14265a">
           <div class="card-body">
-            <h5 class="card-title">Produzione Totale</h5>
+            <h5 class="card-title">Produzione Totale
+            <i class="bi bi-box-seam-fill"></i></h5>
             <p class="card-text fs-1 fw-bold">{{props.plcStore.getContatori[0].contatorepezzitotale}}</p>
           </div>
         </div>
@@ -22,7 +23,8 @@
       <div class="col-12 col-md-6">
         <div class="card text-white shadow" style="background: #14265a">
           <div class="card-body">
-            <h5 class="card-title">Produzione Parziale</h5>
+            <h5 class="card-title">Produzione Parziale
+              <i class="bi bi-box-seam"></i></h5>
             <p class="card-text fs-1 fw-bold">{{props.plcStore.getContatori[0].contatorepezziparziale}}</p>
           </div>
         </div>
@@ -32,6 +34,7 @@
         <div class="card shadow">
           <div class="card-header text-white shadow" style="background: #14265a">
             Produzione Oraria
+            <i class="bi bi-clock"></i>
           </div>
           <div class="card-body text-center ">
             <apexchart
@@ -48,6 +51,7 @@
         <div class="card shadow">
           <div class="card-header text-white shadow" style="background: #14265a">
             Temperatura CPU con Allarme
+            <i class="bi bi-thermometer-half"></i>
           </div>
           <div class="card-body">
             <apexchart

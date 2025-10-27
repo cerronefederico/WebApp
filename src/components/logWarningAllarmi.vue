@@ -124,7 +124,7 @@ const combinedLog = computed(() => {
 
 <template>
 <div class="container-fluid py-4">
-    <div class="card shadow-lg storico-card">
+    <div class="card storico-card">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h2 class="card-title mb-0"><i class="bi bi-clock-history me-2"></i> Storico Allarmi e Warning</h2>
             <span class="badge bg-secondary">Totale Eventi: {{ combinedLog.length }}</span>
@@ -198,7 +198,7 @@ const combinedLog = computed(() => {
 
 .container-fluid {
     /* Assumiamo che ci sia un padding di base per lo spazio dell'header */
-    padding-top: 15px !important;
+    padding-top: 3px !important;
     background-color: var(--color-background);
     min-height: 100vh;
 }
@@ -209,6 +209,7 @@ const combinedLog = computed(() => {
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
+    box-shadow: 0px 0px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .card-title {

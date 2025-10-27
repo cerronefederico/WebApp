@@ -8,6 +8,7 @@ import gestioneProfilo from "@/components/gestioneProfilo.vue";
 import allarmPage from "@/components/allarmPage.vue"
 // ⭐ IMPORTAZIONE AGGIUNTA
 import logWarningAllarmi from "@/components/logWarningAllarmi.vue"
+import ReportisticaCompleta from "@/components/ReportisticaCompleta.vue";
 
 
 const routes = [
@@ -24,23 +25,22 @@ const routes = [
     component: layout,
     children: [
       {
-        path: '', // Corrisponde a /home
+        path: '',
         name: 'Home',
         component: HomePage
       },
       {
-        path: 'plc1', // Percorso finale: /home/plc1
+        path: 'plc1',
         name: 'Plc1',
         component: plcPage
-        // ⭐ Rimosse le props: non viene iniettato nulla dal router
       },
       {
-        path: 'plc2', // Aggiunta la rotta mancante
+        path: 'plc2',
         name: 'Plc2',
         component: plcPage
       },
       {
-        path: 'plc3', // Aggiunta la rotta mancante
+        path: 'plc3',
         name: 'Plc3',
         component: plcPage
       },
@@ -54,11 +54,15 @@ const routes = [
           name: 'AllarmPage',
           component: allarmPage
       },
-      // ⭐ NUOVA ROTTA AGGIUNTA PER LO STORICO ALLARMI
       {
-        path: '/history/alarms', // Usa il percorso completo se deve essere navigabile dal menu principale
+        path: '/history/alarms',
         name: 'HistoricAlarms',
         component: logWarningAllarmi
+      },
+      {
+          path:'/report',
+          name:'ReportDati',
+          component: ReportisticaCompleta
       }
     ]
   }

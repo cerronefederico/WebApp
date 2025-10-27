@@ -249,7 +249,6 @@ const allarmOn = computed(() => {
 </template>
 
 <style scoped>
-/* Rendi l'intestazione del Modal ben definita */
 .modal-header {
     border-bottom: 3px solid #dc3545; /* Bordo rosso più scuro */
 }
@@ -282,7 +281,6 @@ const allarmOn = computed(() => {
     border-right: 1px solid #e9ecef !important;
 }
 .btn-primary {
-    /* Uso le variabili definite in MainLayout.vue (per coerenza con il tema) */
     background-color: #14265a !important;
     border-color: #14265a !important;
     font-weight: bold;
@@ -295,10 +293,9 @@ const allarmOn = computed(() => {
     transform: translateY(-1px);
 }
 .table-container-style {
-    /* Bordo sottile che usa il colore table-primary di Bootstrap (blu chiaro) */
     border: 1px solid #004F70;
-    border-radius: 0.5rem; /* Bordi arrotondati */
-    overflow: hidden; /* Assicura che la tabella interna rispetti il border-radius */
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1); /* Ombra leggera */
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
 }
 </style>

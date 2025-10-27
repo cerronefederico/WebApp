@@ -115,7 +115,7 @@ const getAlarmDisplayName = (technicalName: string): string => {
 
   <div class="row mb-5">
     <div class="col-12">
-      <h1 class="text-center display-4 fw-light text-secondary">
+      <h1 class="text-center display-4 fw-semibold text-danger">
         <span class="border-bottom border-4 pb-2 custom-border-primary custom-text-primary">Allarmi Attivi</span>
       </h1>
     </div>
@@ -248,16 +248,8 @@ const getAlarmDisplayName = (technicalName: string): string => {
 .custom-border-primary {
     border-color: #14265a !important;
 }
-/* Ho rimosso custom-text-primary dal titolo perché era troppo scuro per l'uso come testo primario.
-   Il bordo intorno al titolo è sufficiente a dare l'accento. */
 
 
-/* **************************************************
- * Layout e Contenitori
- * **************************************************/
-.collapse-wrapper {
-    /* Mantenuto per la struttura */
-}
 
 .chart-content-container {
     display: block;
@@ -268,40 +260,11 @@ const getAlarmDisplayName = (technicalName: string): string => {
     padding: 1.5rem;
 }
 
-/* **************************************************
- * Animazione COLLAPSE VERTICALE
- * **************************************************/
-
-.smooth-slide-vertical-enter-active,
-.smooth-slide-vertical-leave-active {
-  transition: max-height 0.5s cubic-bezier(0.25, 0.8, 0.25, 1),
-              opacity 0.4s ease-in-out;
-  overflow: hidden;
-}
-
-.smooth-slide-vertical-enter-from,
-.smooth-slide-vertical-leave-to {
-  max-height: 0;
-  opacity: 0;
-}
-
-.smooth-slide-vertical-enter-to,
-.smooth-slide-vertical-leave-from {
-  max-height: 600px;
-  opacity: 1;
-}
-
-/* **************************************************
- * Stile Tabelle e Colori
- * **************************************************/
-
-/* Rimuove i bordi interni e i bordi della tabella per un aspetto più pulito */
 .table {
     border-spacing: 0;
     border: none;
 }
 
-/* Bordi sottili tra le celle */
 .table th, .table td {
     border-top: 1px solid #dee2e6;
     border-bottom: 1px solid #dee2e6;
@@ -309,13 +272,11 @@ const getAlarmDisplayName = (technicalName: string): string => {
     border-right: 1px solid #dee2e6;
 }
 
-/* L'intestazione della tabella (table-primary) */
+
 .table-primary {
-    /* Mantenuto il blu chiaro di Bootstrap come colore secondario per l'header della tabella dati */
     --bs-table-bg: #cfe2ff;
 }
 
-/* Stile della riga Allarme ATTIVO (table-danger) */
 .table-danger {
     --bs-table-bg: #ffe0e0; /* Rosso molto chiaro */
     --bs-table-hover-bg: #fddddd;

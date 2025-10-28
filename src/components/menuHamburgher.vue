@@ -103,9 +103,9 @@ const navigateAndClose = (path) => {
                 <li class="list-group-item list-group-item-action">
                     <!-- Modificato: @click chiama la funzione -->
                     <router-link
-                        to="/history/plc-data"
+                        to="/history/datiprod"
                         class="menu-item"
-                        @click.prevent="navigateAndClose('/history/plc-data')"
+                        @click.prevent="navigateAndClose('/history/datiprod')"
                     >
                         <i class="bi bi-database-up"></i> Dati di Produzione
                     </router-link>
@@ -123,9 +123,9 @@ const navigateAndClose = (path) => {
                 <li class="list-group-item list-group-item-action">
                     <!-- Modificato: @click chiama la funzione -->
                     <router-link
-                        to="/report"
+                        to="/history/report"
                         class="menu-item"
-                        @click.prevent="navigateAndClose('/report')"
+                        @click.prevent="navigateAndClose('/history/report')"
                     >
                         <i class="bi bi-bar-chart"></i> Reportistica Completa
                     </router-link>

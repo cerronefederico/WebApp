@@ -52,13 +52,13 @@
 
           <div class="col-md-3">
             <div class="kpi-card text-center shadow-sm">
-              <p class="kpi-label">Tempo Attivo (Ore)</p>
+              <p class="kpi-label">Velocità Media</p>
               <h3 class="kpi-value text-success">0h</h3> </div>
           </div>
 
           <div class="col-md-3">
             <div class="kpi-card text-center shadow-sm">
-              <p class="kpi-label">Efficienza Operativa</p>
+              <p class="kpi-label">Temperatura Media</p>
               <h3 class="kpi-value text-info">0%</h3> </div>
           </div>
 
@@ -200,18 +200,15 @@ watch(reportType, (newType) => {
 </script>
 
 <style scoped>
-/* Definiamo le variabili per coerenza con il tuo tema */
+
 :root {
   --color-primary: #14265a;
   --color-success: #28a745;
   --color-danger: #dc3545;
   --color-warning: #ffc107;
-  --color-info: #17a2b8; /* Aggiunto per KPI Efficienza */
+  --color-info: #17a2b8;
 }
 
-/* -------------------------------------- */
-/* STILE CONTENITORI */
-/* -------------------------------------- */
 .report-container {
     padding: 1rem;
 }
@@ -231,10 +228,6 @@ watch(reportType, (newType) => {
     border: 1px solid #dee2e6;
 }
 
-
-/* -------------------------------------- */
-/* STILE KPI CARDS */
-/* -------------------------------------- */
 .kpi-card {
     background-color: white;
     border: 1px solid #dee2e6;
@@ -254,9 +247,6 @@ watch(reportType, (newType) => {
     font-weight: 700;
 }
 
-/* -------------------------------------- */
-/* STILE CHART CARDS (Grafici e Tabelle) */
-/* -------------------------------------- */
 .chart-card {
     border: 1px solid #dee2e6;
     border-radius: 8px;

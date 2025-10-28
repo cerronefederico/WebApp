@@ -9,6 +9,7 @@ import allarmPage from "@/components/allarmPage.vue"
 // ⭐ IMPORTAZIONE AGGIUNTA
 import logWarningAllarmi from "@/components/logWarningAllarmi.vue"
 import ReportisticaCompleta from "@/components/ReportisticaCompleta.vue";
+import DatiProduzione from "@/components/DatiProduzione.vue";
 
 
 const routes = [
@@ -60,9 +61,14 @@ const routes = [
         component: logWarningAllarmi
       },
       {
-          path:'/report',
+          path:'/history/report',
           name:'ReportDati',
           component: ReportisticaCompleta
+      },
+      {
+          path:'/history/datiprod',
+          name:'DatiProduzione',
+          component: DatiProduzione
       }
     ]
   }

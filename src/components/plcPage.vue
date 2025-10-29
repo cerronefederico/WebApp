@@ -6,10 +6,10 @@ import { Popover } from 'bootstrap';
 // Importiamo tutti gli store necessari
 import { usePlc1Store, usePlc2Store, usePlc3Store } from '@/stores/index';
 
-import StatistichePlc from "@/components/statistichePlc.vue";
 import ContatorePlc from "@/components/contatorePlc.vue";
 import WarningPlc from "@/components/warningPlc.vue";
 import AllarmPlc from "@/components/allarmPlc.vue";
+import StatistichePlc from "@/components/statistichePlc.vue";
 
 
 const route = useRoute();
@@ -216,6 +216,7 @@ const plcStato = computed(() => {
       </div>
     </div>
 </div>
+  <StatistichePlc></StatistichePlc>
 </template>
 
 <style scoped>

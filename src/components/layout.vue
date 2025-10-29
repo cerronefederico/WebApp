@@ -2,7 +2,8 @@
 import MenuAccount from "@/components/menuAccount.vue";
 import MenuHamburgher from "@/components/menuHamburgher.vue";
 import SearchBar from "@/components/searchBar.vue";
-import { useWebSocketStore} from '@/stores/webSoket'; // Importa lo store WS
+import { useWebSocketStore} from '@/stores/webSoket';
+import ToastsPage from "@/components/toastsPage.vue"; // Importa lo store WS
 
 const webSocketStore = useWebSocketStore();
 
@@ -41,6 +42,7 @@ const webSocketStore = useWebSocketStore();
     <main class="app-content-wrapper">
       <router-view />
     </main>
+    <ToastsPage></ToastsPage>
   </div>
   <div v-else>
     <div class="d-flex justify-content-center align-items-center vh-100">

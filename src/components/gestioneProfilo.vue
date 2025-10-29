@@ -1,34 +1,33 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import { useAuthStore } from "@/stores/auth.js";
+import { useAuthStore } from "@/stores/auth.js"; // Lo store ora gestisce anche la posizione del Toast
 import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
 const router = useRouter();
 
-// 1. Definisce la chiave univoca per localStorage
-// Prende l'email direttamente dallo store. Se lo store è null, usa una stringa vuota o un fallback.
 const userIdKey = computed(() => authStore.currentUser.email || '');
 
 const ruolo = computed(() => {
     const userIdentifier = authStore.currentUser.email;
 
-    // Verifica se l'identificativo utente (l'email in questo caso) è esattamente 'admin' (case-insensitive)
     if (userIdentifier && userIdentifier.toLowerCase() === 'admin@ing.com') {
-        return 'Amministratore'; // Ruolo 'Amministratore'
+        return 'Amministratore';
     } else {
-        return 'Manutentore'; // Ruolo di default
+        return 'Manutentore';
     }
 });
 
-// 2. Mantiene la logica del tema (theme) localmente
-// Il tema viene inizializzato con la preferenza salvata in localStorage, usando l'email come chiave.
 const theme = ref(
     localStorage.getItem(`hmi-theme-${userIdKey.value}`) || 'light'
 );
 
-// 3. Rimosse le variabili 'currentUserId' e 'user' fittizie.
-//    L'unico dato utente utilizzato è 'authStore.currentUser' per l'email e la chiave del tema.
+// 🚀 Modificato: Collega v-model del template direttamente al getter/setter reattivo dello store Pinia Auth.
+// Questo assicura che il cambio nel menu aggiorni subito lo stato e di conseguenza il ToastManager.
+const toastPlacement = computed({
+    get: () => authStore.getToastPlacement,
+    set: (value) => authStore.setToastPlacement(value)
+});
 
 const activeTab = ref('info');
 
@@ -44,9 +43,10 @@ const applyTheme = (currentTheme) => {
 const utenti = ref([]);
 
 onMounted(async () => {
-  // Applica il tema salvato al mount
   applyTheme(theme.value);
-  // Carica la lista degli utenti
+  // La preferenza del toast viene inizializzata automaticamente nello store 'auth.js'
+  // al momento del caricamento, garantendo la persistenza.
+
   await fetchUtenti();
 });
 
@@ -57,7 +57,6 @@ const fetchUtenti = async () => {
   }
 }
 
-
 const handleLogout = () => {
     authStore.logout();
     alert('Logout effettuato. Reindirizzamento al login.');
@@ -67,10 +66,12 @@ const handleLogout = () => {
 const savePreferences = () => {
     applyTheme(theme.value);
 
-    // Salva il tema usando l'ID utente/email Pinia come chiave
     localStorage.setItem(`hmi-theme-${userIdKey.value}`, theme.value);
 
-    console.log('Preferenze salvate:', theme.value);
+    // La posizione del toast è già salvata dall'azione setToastPlacement quando si interagisce
+    // con il menu a tendina. Non è necessario salvarla nuovamente qui.
+
+    console.log('Preferenze salvate:', theme.value, authStore.getToastPlacement);
     alert('Preferenze HMI salvate con successo!');
 };
 
@@ -80,7 +81,6 @@ const listUtenti = async () => {
           method: 'GET',
     });
 
-    // Gestione della risposta:
     if (!response.ok) {
         throw new Error(`Errore HTTP! Stato: ${response.status}`);
     }
@@ -90,7 +90,6 @@ const listUtenti = async () => {
 
   } catch (error) {
     console.error('Errore durante il recupero della lista utenti:', error);
-    // Gestione dell'errore (e.g., mostrare un messaggio all'utente)
   }
 };
 const newEmail = ref('');
@@ -99,45 +98,36 @@ let adding = ref(false);
 let deleting = ref('');
 
 async function addUtente() {
-    // 1. Validazione base
     if (!newEmail.value.trim() || !newPassword.value.trim()) {
         alert('Per favore, inserisci sia l\'email che la password.');
         return;
     }
 
-    const emailToSend = `${newEmail.value}@ing.com`; // Ricostruisce l'email completa
+    const emailToSend = `${newEmail.value}@ing.com`;
 
     try {
       adding.value=true;
-      const response = await fetch('http://localhost:8000/api/register', { // Endpoint FastAPI per la registrazione
+      const response = await fetch('http://localhost:8000/api/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                // N.B. In un'applicazione reale, dovresti inviare qui il token di accesso
-                // dell'amministratore per autorizzare questa operazione!
             },
             body: JSON.stringify({
                 email: emailToSend,
                 password: newPassword.value,
-                // Aggiungere qui eventuali altri campi come 'ruolo' se necessario
             }),
       });
 
-        // 2. Gestione della risposta
         if (response.ok) {
 
-            // Aggiorna la lista degli utenti
             await fetchUtenti();
             adding.value= false;
 
             alert(`Utente ${emailToSend} aggiunto con successo!`);
-            // Resetta i campi input
             newEmail.value = '';
             newPassword.value = '';
 
-
         } else {
-            // Estrai l'errore dal corpo della risposta se possibile
             const errorData = await response.json();
             alert(`Errore nell'aggiunta utente: ${errorData.detail || response.statusText}`);
             adding.value = false;
@@ -152,12 +142,10 @@ async function addUtente() {
 async function deleteUtente(email) {
   try {
     deleting.value = email;
-     const response = await fetch('http://localhost:8000/api/delete', { // Endpoint FastAPI per la registrazione
+     const response = await fetch('http://localhost:8000/api/delete', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                // N.B. In un'applicazione reale, dovresti inviare qui il token di accesso
-                // dell'amministratore per autorizzare questa operazione!
             },
             body: JSON.stringify({
                 email: email,
@@ -195,12 +183,10 @@ async function reimpostaPassword() {
   }
   try {
     flagResetPassword.value=true;
-    const response = await fetch('http://localhost:8000/api/cangePassword', { // Endpoint FastAPI per la registrazione
+    const response = await fetch('http://localhost:8000/api/cangePassword', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // N.B. In un'applicazione reale, dovresti inviare qui il token di accesso
-        // dell'amministratore per autorizzare questa operazione!
       },
       body: JSON.stringify({
         email: authStore.currentUser.email,
@@ -223,10 +209,6 @@ async function reimpostaPassword() {
   }
 
 }
-
-
-
-
 </script>
 
 <template>
@@ -288,6 +270,25 @@ async function reimpostaPassword() {
           <option value="light">Chiaro</option>
           <option value="dark">Scuro (Ideale per notturna)</option>
         </select>
+      </div>
+      <div class="setting-item">
+        <form>
+  <div class="mb-3">
+    <label for="selectToastPlacement">Posizione Notifiche Toast</label>
+    <select class="form-select mt-2" id="selectToastPlacement" v-model="toastPlacement">
+      <option value="">Non mostrare (disabilitato)</option>
+      <option value="top-0 start-0">In alto a sinistra</option>
+      <option value="top-0 start-50 translate-middle-x">In alto al centro</option>
+      <option value="top-0 end-0">In alto a destra</option>
+      <option value="top-50 start-0 translate-middle-y">A metà a sinistra</option>
+      <option value="top-50 start-50 translate-middle">Al centro dello schermo</option>
+      <option value="top-50 end-0 translate-middle-y">A metà a destra</option>
+      <option value="bottom-0 start-0">In basso a sinistra</option>
+      <option value="bottom-0 start-50 translate-middle-x">In basso al centro</option>
+      <option value="bottom-0 end-0">In basso a destra</option>
+    </select>
+  </div>
+</form>
       </div>
 
       <button @click="savePreferences" class="btn-primary mt-4">Salva Preferenze</button>
@@ -379,7 +380,6 @@ async function reimpostaPassword() {
 </template>
 
 <style scoped>
-/* Stili invariati, ma ho rimosso le classi non più usate per i ruoli */
 .profile-container {
     max-width: 900px;
     margin: 40px auto;
@@ -494,7 +494,6 @@ async function reimpostaPassword() {
 </style>
 
 <style>
-/* Stili GLOBALI PER IL TEMA (Lasciati invariati) */
 :root {
     --color-background: #f4f7f9;
     --color-background-secondary: #f8f9fa;

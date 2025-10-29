@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import {computed, ref} from 'vue';
 import { usePlc1Store, usePlc2Store, usePlc3Store } from '@/stores/index';
 
 // Inizializza gli Store
@@ -89,6 +89,8 @@ const getEventType = (itemId: string): 'Warning' | 'Allarme' => {
 };
 
 
+const flagPlc = ref('');
+const flagEvento =ref('');
 // Calcola il log combinato e ordinato di tutte le notifiche (Allarmi e Warning)
 const combinedLog = computed(() => {
 
@@ -108,7 +110,7 @@ const combinedLog = computed(() => {
     const log3 = mapLog(plc3Store.getNotifiche, 'PLC3');
 
     // 2. Combina tutti i log (ALLARMI + WARNINGS)
-    const combined = [...log1, ...log2, ...log3];
+    let combined = [...log1, ...log2, ...log3];
 
 
     // 3. Ordina per 'ora' (Timestamp) in ordine decrescente (il più recente in alto)
@@ -117,31 +119,178 @@ const combinedLog = computed(() => {
         return b.ora.localeCompare(a.ora);
     });
 
+    if(flagPlc.value==='plc1'){
+      combined = combined.filter(log => log.plcId === 'PLC1');
+    }
+    if(flagPlc.value==='plc2'){
+      combined = combined.filter(log => log.plcId === 'PLC2');
+    }
+    if(flagPlc.value==='plc3'){
+      combined = combined.filter(log => log.plcId === 'PLC3');
+    }
+    if(flagEvento.value==='AAG'){
+      combined = combined.filter(log => log.id === 'aAnomaliaGenerica');
+    }
+    if(flagEvento.value==='AMN'){
+      combined = combined.filter(log => log.id === 'aMotoreNastro');
+    }
+    if(flagEvento.value==='AMC'){
+      combined = combined.filter(log => log.id === 'aMancanzaConsenso');
+    }
+    if(flagEvento.value==='ATPA'){
+      combined = combined.filter(log => log.id === 'aTemperaturaProdottoAlta');
+    }
+    if(flagEvento.value==='AEI'){
+      combined = combined.filter(log => log.id === 'aEmergenzaInserita');
+    }
+    if(flagEvento.value==='ATCE'){
+      combined = combined.filter(log => log.id === 'aTemperaturaCpuElevata');
+    }
+    if(flagEvento.value==='AAS'){
+      combined = combined.filter(log => log.id === 'aAggraffatriceSpenta');
+    }
+    if(flagEvento.value==='ANS'){
+      combined = combined.filter(log => log.id === 'aNastroSpento');
+    }
+    if(flagEvento.value==='WST'){
+      combined = combined.filter(log => log.id === 'wTermico');
+    }
+    if(flagEvento.value==='WAN'){
+      combined = combined.filter(log => log.id === 'wAnomaliaNastro');
+    }
+    if(flagEvento.value==='WMP'){
+      combined = combined.filter(log => log.id === 'wMancanzaProdotto');
+    }
+    if(flagEvento.value==='WIPP'){
+      combined = combined.filter(log => log.id === 'wPieno');
+    }
+    if(flagEvento.value==='WSA'){
+      combined = combined.filter(log => log.id === 'wPortelloneAperto');
+    }
     return combined;
 });
+function chooseAllPlc() {
+  flagPlc.value='';
+}
+function choosePlc1() {
+  flagPlc.value='plc1';
+}
+function choosePlc2() {
+  flagPlc.value='plc2';
+}
+function choosePlc3() {
+  flagPlc.value='plc3';
+}
+function chooseAllEvent(){
+  flagEvento.value='';
+}
+function chooseAAGEvent(){
+  flagEvento.value='AAG';
+}
+function chooseAMNEvent(){
+  flagEvento.value='AMN';
+}
+function chooseAMCEvent(){
+  flagEvento.value='AMC';
+}
+function chooseATPAEvent(){
+  flagEvento.value='ATPA';
+}
+function chooseAEIEvent(){
+  flagEvento.value='AEI';
+}
+function chooseATCEEvent(){
+  flagEvento.value='ATCE';
+}
+function chooseAASEvent(){
+  flagEvento.value='AAS';
+}
+function chooseANSEvent(){
+  flagEvento.value='ANS';
+}
+function chooseWSTEvent(){
+  flagEvento.value='WST';
+}
+function chooseWANEvent(){
+  flagEvento.value='WAN';
+}
+function chooseWMPEvent(){
+  flagEvento.value='WMP';
+}
+function chooseWIPPEvent(){
+  flagEvento.value='WIPP';
+}
+function chooseWSAEvent(){
+  flagEvento.value='WSA';
+}
 
 </script>
 
 <template>
 <div class="container-fluid py-4">
-    <div class="card storico-card">
+    <div class="card shadow-lg storico-card">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h2 class="card-title mb-0"><i class="bi bi-clock-history me-2"></i> Storico Allarmi e Warning</h2>
             <span class="badge bg-secondary">Totale Eventi: {{ combinedLog.length }}</span>
         </div>
 
         <div class="card-body p-0">
-            <div class="table-responsive log-table-container">
-                <table class="table table-striped table-hover table-sm mb-0">
-                    <thead class="sticky-top bg-light">
+            <div class="table-responsive log-header-container">
+                <table class="table table-sm mb-0 log-header-table">
+                    <thead>
                         <tr>
                             <th style="width: 15%;">Timestamp</th>
-                            <th style="width: 10%;">PLC</th>
-                            <th style="width: 50%;">Descrizione Evento</th>
+                            <th class="dropdown" style="width: 10%;">
+                                <a
+                                    class="btn btn-secondary dropdown-toggle bg-transparent text-dark fw-bold"
+                                    href="#"
+                                    role="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    data-bs-display="static"
+                                >Plc</a>
+                              <ul class="dropdown-menu">
+                                <li><a v-on:click="chooseAllPlc" :class="flagPlc === '' ? 'dropdown-item active' : 'dropdown-item'" href="#">tutti i plc</a></li>
+                                <li><a v-on:click="choosePlc1" :class="flagPlc === 'plc1' ? 'dropdown-item active' : 'dropdown-item'" href="#">plc1</a></li>
+                                <li><a v-on:click="choosePlc2" :class="flagPlc === 'plc2' ? 'dropdown-item active' : 'dropdown-item'" href="#">plc2</a></li>
+                                <li><a v-on:click="choosePlc3" :class="flagPlc === 'plc3' ? 'dropdown-item active' : 'dropdown-item'" href="#">plc3</a></li>
+                              </ul>
+                            </th>
+                            <th class="dropdown" style="width: 50%;">
+                                <a
+                                  class="btn btn-secondary dropdown-toggle bg-transparent text-dark fw-bold"
+                                  href="#"
+                                  role="button"
+                                  data-bs-toggle="dropdown"
+                                  aria-expanded="false"
+                                  data-bs-display="static"
+                              >Descrizione evento</a>
+                              <ul class="dropdown-menu">
+                                <li><a v-on:click="chooseAllEvent" :class="flagEvento === '' ? 'dropdown-item active' : 'dropdown-item'" href="#">tutti gli eventi</a></li>
+                                <li><a v-on:click="chooseAAGEvent" :class="flagEvento === 'AAG' ? 'dropdown-item active' : 'dropdown-item'" href="#">Anomalia Generica</a></li>
+                                <li><a v-on:click="chooseAMNEvent" :class="flagEvento === 'AMN' ? 'dropdown-item active' : 'dropdown-item'" href="#">Motore Nastro</a></li>
+                                <li><a v-on:click="chooseAMCEvent" :class="flagEvento === 'AMC' ? 'dropdown-item active' : 'dropdown-item'" href="#">Mancanza Consenso</a></li>
+                                <li><a v-on:click="chooseATPAEvent" :class="flagEvento === 'ATPA' ? 'dropdown-item active' : 'dropdown-item'" href="#">Temperatura Prodotto Alta</a></li>
+                                <li><a v-on:click="chooseAEIEvent" :class="flagEvento === 'AEI' ? 'dropdown-item active' : 'dropdown-item'" href="#">Emergenza Inserita</a></li>
+                                <li><a v-on:click="chooseATCEEvent" :class="flagEvento === 'ATCE' ? 'dropdown-item active' : 'dropdown-item'" href="#">Temperatura CPU Elevata</a></li>
+                                <li><a v-on:click="chooseAASEvent" :class="flagEvento === 'AAS' ? 'dropdown-item active' : 'dropdown-item'" href="#">Aggraffatrice Spenta</a></li>
+                                <li><a v-on:click="chooseANSEvent" :class="flagEvento === 'ANS' ? 'dropdown-item active' : 'dropdown-item'" href="#">Nastro Spento</a></li>
+                                <li><a v-on:click="chooseWSTEvent" :class="flagEvento === 'WST' ? 'dropdown-item active' : 'dropdown-item'" href="#">Scatto Termico</a></li>
+                                <li><a v-on:click="chooseWANEvent" :class="flagEvento === 'WAN' ? 'dropdown-item active' : 'dropdown-item'" href="#">Anomalia Nastro</a></li>
+                                <li><a v-on:click="chooseWMPEvent" :class="flagEvento === 'WMP' ? 'dropdown-item active' : 'dropdown-item'" href="#">Mancanza Prodotto</a></li>
+                                <li><a v-on:click="chooseWIPPEvent" :class="flagEvento === 'WIPP' ? 'dropdown-item active' : 'dropdown-item'" href="#">Ingresso Prodotto Pieno</a></li>
+                                <li><a v-on:click="chooseWSAEvent" :class="flagEvento === 'WSA' ? 'dropdown-item active' : 'dropdown-item'" href="#">Sportello Aperto</a></li>
+                              </ul>
+                            </th>
                             <th style="width: 15%;">Tipo</th>
                             <th style="width: 10%;" class="text-center">Stato</th>
                         </tr>
                     </thead>
+                </table>
+            </div>
+
+            <div class="table-responsive log-content-container">
+                <table class="table table-striped table-hover table-sm mb-0 log-content-table">
                     <tbody>
                         <tr v-if="combinedLog.length === 0">
                             <td colspan="5" class="text-center py-4 text-muted">Nessun evento storico trovato.</td>
@@ -157,16 +306,15 @@ const combinedLog = computed(() => {
                                 'table-info': !log.stato && log.tipo === 'Warning',   // Reset Warning
                             }"
                         >
-                            <td>{{ formattedTime(log.ora) }}</td>
-                            <td><span class="badge bg-primary">{{ log.plcId }}</span></td>
-                            <!-- QUI USIAMO LA NUOVA FUNZIONE -->
-                            <td>{{ getAlarmDisplayName(log.id) }}</td>
-                            <td>
+                            <td style="width: 15%;">{{ formattedTime(log.ora) }}</td>
+                            <td style="width: 10%;"><span class="badge bg-primary">{{ log.plcId }}</span></td>
+                            <td style="width: 50%;">{{ getAlarmDisplayName(log.id) }}</td>
+                            <td style="width: 15%;">
                                 <span :class="['badge', { 'bg-danger': log.tipo === 'Allarme', 'bg-warning text-dark': log.tipo === 'Warning' }]">
                                     {{ log.tipo }}
                                 </span>
                             </td>
-                            <td class="text-center">
+                            <td style="width: 10%;" class="text-center">
                                 <span :class="['badge', { 'bg-danger': log.stato, 'bg-success': !log.stato }]">
                                     {{ log.stato ? 'ATTIVO/INIZIO' : 'RITORNO/FINE' }}
                                 </span>
@@ -192,15 +340,10 @@ const combinedLog = computed(() => {
     background-color: var(--color-primary) !important;
 }
 
-.bg-secondary {
-    background-color: #6c757d !important;
-}
 
 .container-fluid {
-    /* Assumiamo che ci sia un padding di base per lo spazio dell'header */
-    padding-top: 3px !important;
+  margin-top: -20px;
     background-color: var(--color-background);
-    min-height: 100vh;
 }
 
 .storico-card {
@@ -208,8 +351,6 @@ const combinedLog = computed(() => {
     margin: 0 auto;
     border: 1px solid #ddd;
     border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0px 0px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .card-title {
@@ -217,19 +358,34 @@ const combinedLog = computed(() => {
     font-size: 1.5rem;
 }
 
-.log-table-container {
-    /* Limita l'altezza della tabella e la rende scrollabile */
-    max-height: calc(100vh - 200px);
-    overflow-y: auto;
+/* ⭐ NUOVO: Questo div ora contiene solo l'intestazione e NON DEVE SCORRERE */
+.log-header-container {
+    /* Rimuovi l'overflow, lascia che i dropdown si espandano liberamente */
+    overflow: visible;
 }
 
-.log-table-container thead th {
-    /* Fissa l'intestazione della tabella */
-    position: sticky;
-    top: 0;
-    z-index: 10;
+/* ⭐ NUOVO: Questo div gestisce l'altezza fissa e lo scorrimento del contenuto */
+.log-content-container {
+    max-height: calc(100vh - 260px); /* Altezza leggermente ridotta per fare spazio all'intestazione separata */
+    overflow: auto;
+}
+
+/* Intestazione: assicuriamoci che lo sfondo sia visibile e non scorra */
+.log-header-table thead th {
+    /* Rimosso position: sticky/top/z-index perché la tabella non scorre più */
     background-color: #f8f9fa;
     box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenuto: rimuovi il margine superiore che crea spazio tra le due tabelle */
+.log-content-table {
+    margin-top: -1px; /* Solitamente aiuta a unire visivamente i bordi */
+}
+
+/* ⭐ FIX AGGIORNATO: Assicuriamo che il dropdown sia sopra il div che scorre */
+.log-header-container .dropdown-menu {
+    /* Lo z-index è necessario per assicurare che il menu si sovrapponga a tutto */
+    z-index: 9999 !important;
 }
 
 .table th, .table td {

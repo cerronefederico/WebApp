@@ -77,16 +77,17 @@
     </div>
 
     <Transition name="fade-slide">
-  <div v-if="selectedPlc" class="plc-report-detail card shadow-lg p-4">
-    <h2 class="text-primary mb-4">Report Dettagliato: {{ selectedPlc }}</h2>
+      <div v-if="selectedPlc" :key="selectedPlc" class="plc-report-detail card shadow-lg p-4">
 
-    <button class="btn btn-sm btn-outline-secondary close-button" @click="selectedPlc = null">
-      Chiudi Report
-    </button>
+        <h2 class="text-primary mb-4">Report Dettagliato: {{ selectedPlc }}</h2>
 
-    <div class="report-content mt-3">
-      <prova-reportistica :plc-id="selectedPlc" />
-    </div>
+        <button class="btn btn-sm btn-outline-secondary close-button" @click="selectedPlc = null">
+          Chiudi Report
+        </button>
+
+        <div class="report-content mt-3">
+          <prova-reportistica :plc-id="selectedPlc" />
+        </div>
 
       </div>
     </Transition>
@@ -95,9 +96,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, defineProps, onMounted } from 'vue'; // ⭐ AGGIUNTE NECESSARIE
 const selectedPlc = ref(null);
 import provaReportistica from './provaReportistica.vue';
+
+// 1. DEFINIZIONE DELLA PROP RICEVUTA DALLA ROUTE
+const props = defineProps({
+  plcId: {
+    type: String,
+    default: null,
+  }
+});
 
 /**
  * Funzione per selezionare/deselezionare un PLC.
@@ -110,6 +119,15 @@ const selectPlc = (plcId) => {
     selectedPlc.value = plcId;
   }
 };
+
+// 2. HOOK DI INIZIALIZZAZIONE (LEGGE IL PARAMETRO ALL'AVVIO)
+onMounted(() => {
+    // Se la prop 'plcId' è stata passata dall'URL (cioè se arriviamo da DatiProduzione.vue)
+    if (props.plcId) {
+        // IMPOSTA LO STATO LOCALE PER APRIRE DIRETTAMENTE IL REPORT
+        selectedPlc.value = props.plcId;
+    }
+});
 </script>
 
 <style scoped>
@@ -120,7 +138,7 @@ const selectPlc = (plcId) => {
   --color-border-light: rgba(248, 249, 250, 0.27);
 }
 
-
+/* ... (Il resto dello stile rimane invariato) ... */
 
 .page-header {
     margin-bottom: 0;

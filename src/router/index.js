@@ -61,14 +61,15 @@ const routes = [
         component: logWarningAllarmi
       },
       {
-          path:'/history/report',
+          path:'/history/report/:plcId?',
           name:'ReportDati',
-          component: ReportisticaCompleta
+          component: ReportisticaCompleta,
+          props: true
       },
       {
           path:'/history/datiprod',
           name:'DatiProduzione',
-          component: DatiProduzione
+          component: DatiProduzione,
       }
     ]
   }

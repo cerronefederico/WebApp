@@ -10,25 +10,25 @@
     <div class="row g-4 mb-5">
 
       <div class="col-md-3">
-        <div class="kpi-card text-center shadow-sm bg-primary-light">
+        <div class="kpi-card text-center shadow-lg bg-primary-light">
           <p class="kpi-label">Produzione Totale (Pezzi)</p>
           <h3 class="kpi-value text-primary fw-bolder">0</h3> </div>
       </div>
 
       <div class="col-md-3">
-        <div class="kpi-card text-center shadow-sm bg-info-light">
+        <div class="kpi-card text-center shadow-lg bg-info-light">
           <p class="kpi-label">Efficienza Media</p>
           <h3 class="kpi-value text-info fw-bolder">0%</h3> </div>
       </div>
 
       <div class="col-md-3">
-        <div class="kpi-card text-center shadow-sm bg-danger-light">
+        <div class="kpi-card text-center shadow-lg bg-danger-light">
           <p class="kpi-label">Allarmi Attivati</p>
           <h3 class="kpi-value text-danger fw-bolder">0</h3> </div>
       </div>
 
       <div class="col-md-3">
-        <div class="kpi-card text-center shadow-sm bg-warning-light">
+        <div class="kpi-card text-center shadow-lg bg-warning-light">
           <p class="kpi-label">Warning Attivati</p>
           <h3 class="kpi-value text-warning fw-bolder">0</h3> </div>
       </div>
@@ -38,7 +38,7 @@
     <div class="row g-4 mb-5">
 
       <div class="col-lg-6">
-        <div class="card shadow chart-card">
+        <div class="card shadow-lg chart-card">
           <div class="card-header bg-light text-primary fw-bold">Produzione Totale (Pezzi) per PLC</div>
           <div class="card-body">
             <div class="chart-placeholder">Grafico a Barre: PLC1 vs PLC2 vs PLC3</div>
@@ -47,7 +47,7 @@
       </div>
 
       <div class="col-lg-6">
-        <div class="card shadow chart-card">
+        <div class="card shadow-lg chart-card">
           <div class="card-header bg-light text-primary fw-bold">Efficienza Operativa (%) per PLC</div>
           <div class="card-body">
             <div class="chart-placeholder">Grafico a Barre: Efficienza di ciascun PLC</div>
@@ -60,37 +60,37 @@
     <div class="row g-4">
 
       <div class="col-md-4">
-        <div class="status-card p-4 shadow-sm">
+        <div class="status-card p-4 shadow-lg">
             <h4 class="text-primary">PLC 1</h4>
             <p class="mb-1">Stato: <strong class="text-success">A Regime</strong></p>
             <p class="mb-1">Pezzi/Min: <strong>0</strong></p>
             <p class="mb-3">Allarmi Live: <strong class="text-danger">0</strong></p>
           <router-link to="/history/report">
-            <button class="btn btn-sm btn-outline-primary w-100">Visualizza Report Dettagliato</button>
+            <button class="btn btn-sm btn-outline-primary w-100" @click="goToReport('PLC1')">Visualizza Report Dettagliato</button>
           </router-link>
         </div>
       </div>
 
       <div class="col-md-4">
-        <div class="status-card p-4 shadow-sm">
+        <div class="status-card p-4 shadow-lg">
             <h4 class="text-primary">PLC 2</h4>
             <p class="mb-1">Stato: <strong class="text-warning">In Blocco</strong></p>
             <p class="mb-1">Pezzi/Min: <strong>0</strong></p>
             <p class="mb-3">Allarmi Live: <strong class="text-danger">0</strong></p>
           <router-link to="/history/report">
-            <button class="btn btn-sm btn-outline-primary w-100">Visualizza Report Dettagliato</button>
+            <button class="btn btn-sm btn-outline-primary w-100" @click="goToReport('PLC2')">Visualizza Report Dettagliato</button>
           </router-link>
         </div>
       </div>
 
       <div class="col-md-4">
-        <div class="status-card p-4 shadow-sm">
+        <div class="status-card p-4 shadow-lg">
             <h4 class="text-primary">PLC 3</h4>
             <p class="mb-1">Stato: <strong class="text-secondary">Spenta</strong></p>
             <p class="mb-1">Pezzi/Min: <strong>0</strong></p>
             <p class="mb-3">Allarmi Live: <strong class="text-danger">0</strong></p>
           <router-link to="/history/report">
-            <button class="btn btn-sm btn-outline-primary w-100">Visualizza Report Dettagliato</button>
+            <button class="btn btn-sm btn-outline-primary w-100" @click="goToReport('PLC3')">Visualizza Report Dettagliato</button>
           </router-link>
         </div>
       </div>
@@ -100,10 +100,17 @@
 </template>
 
 <script setup>
-// Qui importerai e userai i tuoi store Pinia per i dati live
-// e il tuo servizio API per i dati storici (produzione/efficienza giornaliera).
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
-// Non c'è logica specifica qui, poiché i dati non vengono gestiti.
+const goToReport = (plcId) => {
+    router.push({
+        // Usa il NOME della route di destinazione
+        name: 'ReportDati',
+        // Passa l'ID come parametro
+        params: { plcId: plcId }
+    });
+};
 </script>
 
 <style scoped>

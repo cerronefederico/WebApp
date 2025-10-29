@@ -6,10 +6,11 @@ import HomePage from "@/components/homePage.vue";
 import plcPage from "@/components/plcPage.vue";
 import gestioneProfilo from "@/components/gestioneProfilo.vue";
 import allarmPage from "@/components/allarmPage.vue"
-// ⭐ IMPORTAZIONE AGGIUNTA
 import logWarningAllarmi from "@/components/logWarningAllarmi.vue"
 import ReportisticaCompleta from "@/components/ReportisticaCompleta.vue";
 import DatiProduzione from "@/components/DatiProduzione.vue";
+// ⭐ 1. IMPORTAZIONE DEL NUOVO COMPONENTE
+import Impostazioni from "@/components/Impostazioni.vue";
 
 
 const routes = [
@@ -49,6 +50,12 @@ const routes = [
           path:'gestioneProfilo',
           name: 'gestioneProfilo',
           component: gestioneProfilo
+      },
+      // ⭐ 2. NUOVA ROTTA PER IMPOSTAZIONI
+      {
+          path:'Impostazioni',
+          name: 'Impostazioni',
+          component: Impostazioni // Usa il nome importato
       },
       {
           path:'alarms',

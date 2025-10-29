@@ -6,7 +6,7 @@
         </button>
         <ul class="dropdown-menu">
           <li><router-link to="/home/gestioneProfilo" class="dropdown-item" role="button">Profilo</router-link></li>
-            <li><a class="dropdown-item" href="#">Impostazioni</a></li>
+           <li><router-link to="/home/impostazioni" class="dropdown-item" role="button">Impostazioni</router-link></li>
             <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item cursor-pointer" @click="logoutAndRedirect">Disconnetti</a></li>
         </ul>
@@ -41,8 +41,14 @@ const displayedUser = computed(() => {
 </script>
 
 <style scoped>
-/* Aggiungiamo un cursore per indicare che è cliccabile */
 .cursor-pointer {
   cursor: pointer;
+}
+.dropdown-item.cursor-pointer{
+  transition: background-color 0.3s;
+}
+.dropdown-item.cursor-pointer:hover {
+    color: #ffffff !important;
+    background-color: #8b0000 !important;
 }
 </style>

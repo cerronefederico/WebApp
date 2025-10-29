@@ -290,7 +290,7 @@ function mostraPassword() {
     font-weight: bold;
     color: white;
     font-size: 0.9em;
-    background-color: #007bff;
+    background-color: #14265a;
 }
 
 .tabs-nav {
@@ -385,7 +385,7 @@ function mostraPassword() {
     --color-card-bg: #ffffff;
     --color-text-primary: #343a40;
     --color-border: rgb(213,210,210);
-    --color-accent: #007bff;
+    --color-accent: #14265a;
     --color-accent-dark: #0056b3;
 }
 

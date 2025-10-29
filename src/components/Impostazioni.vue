@@ -269,7 +269,7 @@ async function reimpostaPassword() {
     --color-card-bg: #ffffff;
     --color-text-primary: #343a40;
     --color-border: rgb(213,210,210);
-    --color-accent: #007bff;
+    --color-accent: #14265a;
     --color-accent-dark: #0056b3;
 }
 

@@ -44,6 +44,11 @@ const displayedUser = computed(() => {
 .cursor-pointer {
   cursor: pointer;
 }
+.dropdown-menu li .dropdown-item:hover {
+    background-color: #14265a; /* Colore di sfondo personalizzato all'hover */
+    color: white !important; /* Testo bianco */
+   transition: 0.3s;
+}
 .dropdown-item.cursor-pointer{
   transition: background-color 0.3s;
 }

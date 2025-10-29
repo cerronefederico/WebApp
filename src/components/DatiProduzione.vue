@@ -77,7 +77,9 @@
             <p class="mb-1">Stato: <strong class="text-warning">In Blocco</strong></p>
             <p class="mb-1">Pezzi/Min: <strong>0</strong></p>
             <p class="mb-3">Allarmi Live: <strong class="text-danger">0</strong></p>
+          <router-link to="/history/report">
             <button class="btn btn-sm btn-outline-primary w-100">Visualizza Report Dettagliato</button>
+          </router-link>
         </div>
       </div>
 
@@ -87,7 +89,9 @@
             <p class="mb-1">Stato: <strong class="text-secondary">Spenta</strong></p>
             <p class="mb-1">Pezzi/Min: <strong>0</strong></p>
             <p class="mb-3">Allarmi Live: <strong class="text-danger">0</strong></p>
+          <router-link to="/history/report">
             <button class="btn btn-sm btn-outline-primary w-100">Visualizza Report Dettagliato</button>
+          </router-link>
         </div>
       </div>
     </div>

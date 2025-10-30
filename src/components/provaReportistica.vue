@@ -78,9 +78,24 @@
 
           <div class="col-lg-6">
             <div class="card shadow-sm chart-card">
-              <div class="card-header bg-light text-primary fw-bold">Tendenza Produzione (Pezzi al Minuto)</div>
+              <div class="card-header bg-light text-primary fw-bold">Produzione Oraria (Pezzi in Più)</div>
               <div class="card-body">
-                <div class="chart-placeholder">Grafico a Linee (Placeholder - basato su Contatori)</div>
+
+                <div v-if="!isLoading && produzioneOrariaData.length > 0">
+                    <apexchart
+                        type="bar"
+                        :options="chartOptions"
+                        :series="chartSeries"
+                        height="350"
+                    ></apexchart>
+                </div>
+                <div v-else-if="!isLoading" class="chart-placeholder">
+                    Nessun dato di produzione oraria disponibile nel periodo selezionato.
+                </div>
+                <div v-else class="chart-placeholder">
+                    Caricamento Grafico...
+                </div>
+
               </div>
             </div>
           </div>
@@ -110,20 +125,25 @@
                 <div class="card shadow-sm chart-card">
                     <div class="card-header bg-light text-primary fw-bold">Tabella Dettaglio Eventi Storici</div>
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="table table-responsive overflow-auto" style="max-height: 250px">
                             <table class="table table-striped table-sm">
                                 <thead>
                                     <tr>
+                                        <th>Num.</th>
                                         <th>Codice</th>
-                                        <th>Descrizione</th>
                                         <th>Data/Ora Inizio</th>
-                                        <th>Durata (min)</th>
-                                        <th>Tipo</th>
+                                        <th>Stato</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-if="filteredNotificheData.length === 0">
+                                    <tr v-if="logAllarmiTotali.length === 0">
                                         <td colspan="5" class="text-center text-secondary">Nessuna notifica trovata nel periodo.</td>
+                                    </tr>
+                                    <tr v-if="logAllarmiTotali.length !== 0" v-for="(item, index) in logAllarmiTotali" :key="index">
+                                      <td>{{index + 1}}</td>
+                                      <td>{{item.id}}</td>
+                                      <td>{{item.ora}}</td>
+                                      <td>{{item.stato}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -137,8 +157,11 @@
 </template>
 
 <script setup>
-import { defineProps, ref, watch} from 'vue';
+import {computed, defineProps, ref, watch} from 'vue';
 import {usePlc1Store, usePlc2Store, usePlc3Store} from "@/stores/index.js";
+import VueApexCharts from "vue3-apexcharts";
+
+const apexchart = VueApexCharts;
 
 const plc1 = usePlc1Store();
 const plc2 = usePlc2Store();
@@ -151,35 +174,25 @@ const props = defineProps({
   }
 });
 
-// --- VARIABILI REATTIVE PER I FILTRI ---
 const reportType = ref('daily');
 const startDate = ref(getTodayDate());
 const endDate = ref(getTodayDate());
 const isLoading = ref(false);
 
-// --- VARIABILI REATTIVE PER I DATI FILTRATI (LE TRE BASI) ---
-const filteredReportData = ref([]);    // Stati
-const filteredContatoriData = ref([]);  // Contatori
-const filteredNotificheData = ref([]);  // Notifiche
+const filteredReportData = ref([]);
+const filteredContatoriData = ref([]);
+const filteredNotificheData = ref([]);
 
-// --- VARIABILI REATTIVE PER I KPI ---
 const pezziTotali = ref(0);
 const velocitaMedia = ref(0);
 const temperaturaMedia = ref(0);
 const allarmiTotali = ref(0);
 
 
-// --- FUNZIONI DI BASE ---
-
-/** Ottiene la data di oggi in formato YYYY-MM-DD. */
 function getTodayDate() {
     return new Date().toISOString().split('T')[0];
 }
 
-/**
- * Ottiene tutti i dati grezzi dal Vuex/Pinia store corretto.
- * @param {string} dataType - 'stati', 'contatori' o 'notifiche'
- */
 function getRawData(dataType) {
     let store;
     switch (props.plcId) {
@@ -200,14 +213,6 @@ function getRawData(dataType) {
 }
 
 
-/**
- * Trova il primo record precedente alla data di inizio filtro.
- * Assumiamo che la lista 'data' sia ordinata per data decrescente (la prima è la più recente).
- *
- * @param {Array<Object>} data L'array di dizionari non filtrato.
- * @param {string} startDateString La data di inizio del filtro (es. '2025-10-28').
- * @returns {Object|null} Il dizionario immediatamente precedente a startDate, o null.
- */
 function getPrecedingRecord(data, startDateString) {
     if (!data || data.length === 0) {
         return null;
@@ -215,32 +220,17 @@ function getPrecedingRecord(data, startDateString) {
 
     const startTimestamp = new Date(`${startDateString}T00:00:00.000Z`).getTime();
 
-    // Poiché i dati sono ordinati in modo decrescente (dal più recente al più vecchio):
-    // Il filtro è: itemTimestamp >= startTimestamp.
-    // L'elemento precedente è il primo elemento per cui itemTimestamp < startTimestamp.
-
     for (let i = 0; i < data.length; i++) {
         const itemTimestamp = new Date(data[i].ora).getTime();
-
-        // Se troviamo un elemento più vecchio della data di inizio (startTimestamp)
         if (itemTimestamp < startTimestamp) {
             return data[i];
         }
     }
 
-    return null; // Nessun record trovato precedente all'inizio del report
+    return null;
 }
 
 
-/**
- * Filtra una lista di dizionari in base al campo 'ora' e aggiunge il record precedente.
- *
- * @param {Array<Object>} data L'array di dizionari da filtrare.
- * @param {string} startDateString La data di inizio del filtro.
- * @param {string} finalEndDateString La data di fine del filtro.
- * @param {boolean} includePreceding Se TRUE, include il record immediatamente precedente (per Stati e Contatori).
- * @returns {Array<Object>} I dizionari filtrati.
- */
 function filterDataByTimeRange(data, startDateString, finalEndDateString, includePreceding = false) {
     if (!data || data.length === 0) {
         return [];
@@ -251,20 +241,15 @@ function filterDataByTimeRange(data, startDateString, finalEndDateString, includ
     nextDay.setDate(nextDay.getDate() + 1);
     const endTimestamp = nextDay.getTime();
 
-    // 1. Filtra i dati all'interno dell'intervallo
     let filtered = data.filter(item => {
         const itemTimestamp = new Date(item.ora).getTime();
-        // Condizione standard: >= Inizio E < Fine
         return itemTimestamp >= startTimestamp && itemTimestamp < endTimestamp;
     });
 
-    // 2. Aggiungi l'elemento precedente se richiesto (per Stati e Contatori)
     if (includePreceding) {
         const precedingRecord = getPrecedingRecord(data, startDateString);
 
         if (precedingRecord) {
-            // Aggiungiamo il record precedente. Poiché l'input è decrescente,
-            // il record precedente (il più vecchio) viene aggiunto in fondo.
             filtered.push(precedingRecord);
         }
     }
@@ -273,11 +258,8 @@ function filterDataByTimeRange(data, startDateString, finalEndDateString, includ
 }
 
 
-// --- FUNZIONI DI CALCOLO (REIMPOSTATE) ---
-
 function setPezziTotali() {
   if(filteredContatoriData.value.length > 0) {
-      // Uso il primo e l'ultimo elemento della lista filtrata
       pezziTotali.value =  (filteredContatoriData.value[0].contatorepezzitotale || 0) - (filteredContatoriData.value[filteredContatoriData.value.length - 1].contatorepezzitotale || 0);
   } else {
       pezziTotali.value = 0;
@@ -291,7 +273,6 @@ function calcolaVelocitaMedia() {
       const velocita = item.velocitaproduzionepezziminuto || 0;
       return sum + velocita;
     }, 0);
-    // Media aritmetica su tutti gli elementi (inclusi eventuali record precedenti)
     velocitaMedia.value = (sommaVelocita/ listaDati.length).toFixed(2);
   } else {
       velocitaMedia.value = 0;
@@ -305,7 +286,6 @@ function calcolaTemperaturaMedia() {
       const temperatura = item.temperaturacpu || 0;
       return sum + temperatura;
     }, 0);
-    // Media aritmetica su tutti gli elementi (inclusi eventuali record precedenti)
     temperaturaMedia.value = (sommaTemperatura/ listaDati.length).toFixed(2);
   } else {
       temperaturaMedia.value = 0;
@@ -313,12 +293,14 @@ function calcolaTemperaturaMedia() {
 }
 
 function contaAllarmiTotali() {
-    // Questa funzione è rimasta invariata rispetto alla versione precedente
     let listaDati = filteredNotificheData.value.filter(item => item.stato);
     allarmiTotali.value = listaDati.length;
 }
 
-/** Aggiorna tutti i calcoli KPI. */
+const logAllarmiTotali = computed(() => {
+   return filteredNotificheData.value.filter(item => item.stato);
+});
+
 function updateAllKPIs() {
     setPezziTotali();
     calcolaVelocitaMedia();
@@ -327,8 +309,160 @@ function updateAllKPIs() {
 }
 
 
+function calcolaProduzioneOraria() {
+    if (filteredContatoriData.value.length === 0) {
+        return [];
+    }
+
+    const datiCrescentiArrotondati = [...filteredContatoriData.value]
+        .sort((a, b) => new Date(a.ora).getTime() - new Date(b.ora).getTime())
+        .map(item => {
+            const dataOra = new Date(item.ora);
+            dataOra.setMinutes(0, 0, 0);
+
+            return {
+                oraArrotondata: dataOra.toISOString(),
+                contatore: item.contatorepezzitotale || 0,
+            };
+        });
+
+    const gruppiOrari = {};
+
+    datiCrescentiArrotondati.forEach(item => {
+        const chiaveOra = item.oraArrotondata;
+        if (!gruppiOrari[chiaveOra]) {
+            gruppiOrari[chiaveOra] = [];
+        }
+        gruppiOrari[chiaveOra].push(item);
+    });
+
+    const startReport = new Date(`${startDate.value}T00:00:00Z`);
+    const tempEnd = new Date(`${endDate.value}T00:00:00Z`);
+    tempEnd.setDate(tempEnd.getDate() + 1);
+    const endReport = tempEnd;
+
+    const risultatiFinali = [];
+
+    let ultimoContatoreValido = 0;
+    if (filteredContatoriData.value.length > 0) {
+        ultimoContatoreValido = filteredContatoriData.value[filteredContatoriData.value.length - 1].contatorepezzitotale || 0;
+    }
+
+    let contatoreDiInizioCorrente = ultimoContatoreValido;
+    let ultimoContatoreDiProduzione = ultimoContatoreValido;
+
+    let currentHour = new Date(startReport);
+
+    while (currentHour.getTime() < endReport.getTime()) {
+        const oraISO = currentHour.toISOString();
+        const gruppo = gruppiOrari[oraISO];
+
+        let contatoreDiFineCorrente = contatoreDiInizioCorrente;
+        let pezziProdotti = 0;
+
+        if (gruppo && gruppo.length > 0) {
+
+            contatoreDiInizioCorrente = ultimoContatoreDiProduzione;
+
+            contatoreDiFineCorrente = gruppo[gruppo.length - 1].contatore;
+
+            pezziProdotti = contatoreDiFineCorrente - contatoreDiInizioCorrente;
+
+            ultimoContatoreDiProduzione = contatoreDiFineCorrente;
+
+        } else {
+            pezziProdotti = 0;
+            contatoreDiFineCorrente = contatoreDiInizioCorrente;
+        }
+
+        risultatiFinali.push({
+            x: oraISO,
+            y: pezziProdotti,
+        });
+
+        currentHour.setHours(currentHour.getHours() + 1);
+
+        contatoreDiInizioCorrente = ultimoContatoreDiProduzione;
+    }
+
+    return risultatiFinali;
+}
+
+const produzioneOrariaData = computed(() => {
+    return calcolaProduzioneOraria();
+});
+
+const chartOptions = computed(() => ({
+    chart: {
+        id: 'hourly-production-chart',
+        type: 'bar',
+        toolbar: {
+            show: true
+        }
+    },
+    xaxis: {
+        type: 'datetime',
+        labels: {
+            datetimeFormatter: {
+                year: 'yyyy',
+                month: 'MMM',
+                day: 'dd MMM',
+                hour: 'HH:mm'
+            },
+            style: {
+                fontSize: '10px'
+            }
+        },
+        title: {
+            text: 'Ora di Riferimento'
+        }
+    },
+    yaxis: {
+        title: {
+            text: 'Pezzi Prodotti nell\'Ora'
+        },
+        labels: {
+            formatter: function (val) {
+                return val.toFixed(0);
+            }
+        }
+    },
+    dataLabels: {
+        enabled: true,
+        formatter: function (val) {
+            return val.toFixed(0);
+        }
+    },
+    tooltip: {
+        x: {
+            format: 'dd/MM/yy HH:mm'
+        }
+    },
+    plotOptions: {
+        bar: {
+            columnWidth: '80%',
+            colors: {
+                ranges: [
+                    {
+                        from: -9999999,
+                        to: -0.0001,
+                        color: '#dc3545'
+                    }
+                ],
+                allowMultipleSeriesInSameRect: true,
+            }
+        }
+    },
+    colors: ['#17a2b8']
+}));
+
+const chartSeries = computed(() => [{
+    name: "Pezzi Prodotti",
+    data: produzioneOrariaData.value
+}]);
+
+
 const fetchReportData = async () => {
-    // 1. Validazione Filtri
     let finalEndDate = endDate.value;
     if (reportType.value === 'daily') {
         finalEndDate = startDate.value;
@@ -341,47 +475,33 @@ const fetchReportData = async () => {
 
     isLoading.value = true;
 
-    // 2. RECUPERA E FILTRA TUTTE E TRE LE LISTE
-
-    // Filtra gli STATI (include l'elemento precedente)
     const rawStati = getRawData('stati');
     filteredReportData.value = filterDataByTimeRange(rawStati, startDate.value, finalEndDate, true);
 
-    // Filtra i CONTATORI (include l'elemento precedente)
     const rawContatori = getRawData('contatori');
     filteredContatoriData.value = filterDataByTimeRange(rawContatori, startDate.value, finalEndDate, true);
 
-    // Filtra le NOTIFICHE (NON include l'elemento precedente)
     const rawNotifiche = getRawData('notifiche');
     filteredNotificheData.value = filterDataByTimeRange(rawNotifiche, startDate.value, finalEndDate, false);
 
-    // 3. AGGIORNA TUTTI I CALCOLI
     updateAllKPIs();
 
     isLoading.value = false;
 };
 
 
-// --- WATCHERS E HOOKS ---
-
-// Carica il report iniziale all'apertura del componente
 fetchReportData();
 
-// Ricarica il report quando il PLC ID cambia
 watch(() => props.plcId, () => {
     fetchReportData();
 });
 
-// Watchers per i filtri che ricaricano i dati
 watch([startDate, endDate, reportType], (newValues, oldValues) => {
-    // Gestione del report giornaliero (assicura che endDate = startDate)
     if (reportType.value === 'daily' && startDate.value !== endDate.value) {
         endDate.value = startDate.value;
-        // La chiamata a fetchReportData è gestita dal successivo trigger di watch su endDate
         return;
     }
 
-    // Esegui la ricerca se i valori non sono uguali
     if (newValues[0] !== oldValues[0] || newValues[1] !== oldValues[1] || newValues[2] !== oldValues[2]) {
         fetchReportData();
     }
@@ -390,7 +510,6 @@ watch([startDate, endDate, reportType], (newValues, oldValues) => {
 </script>
 
 <style scoped>
-/* Il CSS non è stato modificato */
 :root {
   --color-primary: #14265a;
   --color-success: #28a745;
@@ -449,7 +568,7 @@ watch([startDate, endDate, reportType], (newValues, oldValues) => {
 }
 
 .chart-placeholder {
-    height: 250px;
+    height: 350px;
     display: flex;
     justify-content: center;
     align-items: center;

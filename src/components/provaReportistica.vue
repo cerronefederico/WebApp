@@ -129,7 +129,17 @@
               <div class="card shadow-sm chart-card">
                   <div class="card-header bg-light text-primary fw-bold">Ripartizione Tipi di Allarme/Warning</div>
                   <div class="card-body">
-                      <div class="chart-placeholder">Grafico a Torta / Anello (Placeholder - basato su Notifiche)</div>
+                      <div v-if="notificheChartSeries.length > 0">
+                          <apexchart
+                              type="polarArea"
+                              :options="notificheChartOptions"
+                              :series="notificheChartSeries"
+                              height="350"
+                          ></apexchart>
+                      </div>
+                      <div v-else class="chart-placeholder">
+                          Nessuna notifica con ID trovata nel periodo selezionato per l'analisi.
+                      </div>
                   </div>
               </div>
           </div>
@@ -500,11 +510,12 @@ function calcolaTemperaturaAndamento() {
 
     if (finalEndDate === todayDate) {
         // Se il giorno finale è oggi, l'end time è l'ora attuale
-        reportEndTimestamp = new Date().getTime();
+        reportEndTimestamp = new Date().getTime() + 3600000;
     } else {
         // Altrimenti, è la mezzanotte del giorno successivo
         const nextDay = new Date(`${finalEndDate}T00:00:00Z`);
         nextDay.setDate(nextDay.getDate() + 1);
+        nextDay.setHours(nextDay.getHours() - 1);
         reportEndTimestamp = nextDay.getTime();
     }
 
@@ -571,7 +582,6 @@ function calcolaTemperaturaAndamento() {
     // Aggiunge l'ultimo punto per estendere la linea fino alla fine dell'intervallo
     if (temperaturaAndamento.length > 0 && temperaturaAndamento[temperaturaAndamento.length - 1].x < reportEndTimestamp) {
         const lastTemp = temperaturaAndamento[temperaturaAndamento.length - 1].y;
-
         // Aggiungi un punto alla fine dell'intervallo con l'ultimo valore di temperatura
         temperaturaAndamento.push({
             x: reportEndTimestamp,
@@ -615,7 +625,7 @@ const temperatureChartOptions = computed(() => ({
              }
              const todayDate = getTodayDate();
              if (finalEndDate === todayDate) {
-                 return new Date().getTime(); // Ora corrente
+                 return new Date().getTime() + 3600000; // Ora corrente
              } else {
                  const nextDay = new Date(`${finalEndDate}T00:00:00Z`);
                  nextDay.setDate(nextDay.getDate() + 1);
@@ -673,6 +683,92 @@ const temperatureChartSeries = computed(() => [{
 // ----------------------------------------------------------------------
 
 
+// ----------------------------------------------------------------------
+// NUOVE FUNZIONI E VARIABILI PER IL GRAFICO DELLE NOTIFICHE (POLAR AREA)
+// ----------------------------------------------------------------------
+
+const notificheChartData = computed(() => {
+    if (logAllarmiTotali.value.length === 0) {
+        return { series: [], labels: [] };
+    }
+
+    const counts = {};
+    // filteredNotificheData contiene oggetti con l'attributo 'id'
+    logAllarmiTotali.value.forEach(item => {
+        const id = item.id;
+        if (id) {
+            counts[id] = (counts[id] || 0) + 1;
+        }
+    });
+
+    // Converte la mappa in array di serie (valori) e etichette (ID)
+    const series = Object.values(counts);
+    const labels = Object.keys(counts);
+  console.log(counts);
+
+    return { series, labels };
+});
+
+const notificheChartSeries = computed(() => notificheChartData.value.series);
+
+const notificheChartOptions = computed(() => ({
+    chart: {
+        type: 'polarArea',
+        toolbar: {
+            show: true
+        }
+    },
+    labels: notificheChartData.value.labels, // Gli ID univoci come etichette
+    fill: {
+        opacity: 0.9,
+    },
+  yaxis: {
+        show: false,
+    },
+    stroke: {
+        colors: ['#fff'],
+        width: 1
+    },
+    legend: {
+        position: 'bottom',
+        // Rende la legenda più compatta e leggibile
+        itemMargin: {
+            horizontal: 5,
+            vertical: 3
+        },
+    },
+    // Abilita le etichette dati, sebbene possano sovrapporsi con molti spicchi
+    dataLabels: {
+        enabled: true,
+        formatter: function (val, opts) {
+            // Mostra il conteggio (valore) direttamente sullo spicchio
+            return opts.w.config.series[opts.seriesIndex];
+        },
+        style: {
+            fontSize: '10px',
+            colors: ['#000'] // Colore scuro per visibilità su sfondi colorati
+        }
+    },
+
+    plotOptions: {
+        polarArea: {
+            rings: {
+                strokeWidth: 0
+            },
+            spokes: {
+                strokeWidth: 0
+            },
+        }
+    },
+    // Colori personalizzati basati su palette Bootstrap per coerenza
+    colors: ['#dc3545', '#ffc107', '#17a2b8', '#28a745', '#6f42c1', '#fd7e14', '#007bff']
+}));
+
+// ----------------------------------------------------------------------
+// FINE GRAFICO NOTIFICHE
+// ----------------------------------------------------------------------
+
+
 const fetchReportData = async () => {
     let finalEndDate = endDate.value;
     if (reportType.value === 'daily') {
@@ -680,7 +776,8 @@ const fetchReportData = async () => {
     }
 
     if (startDate.value && finalEndDate && startDate.value > finalEndDate) {
-        alert("Attenzione: La Data Inizio non può essere successiva alla Data Fine.");
+        // Usa una notifica UI invece di alert() come da istruzioni
+        console.error("Attenzione: La Data Inizio non può essere successiva alla Data Fine.");
         return;
     }
 

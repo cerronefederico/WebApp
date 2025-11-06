@@ -609,7 +609,7 @@ const temperatureChartOptions = computed(() => ({
         }
     },
     stroke: {
-        curve: 'stepline', // Usa 'stepline' per mostrare i cambi di stato (temperatura) nel tempo
+        curve: 'smooth', // Usa 'stepline' per mostrare i cambi di stato (temperatura) nel tempo
         width: 3
     },
     markers: {

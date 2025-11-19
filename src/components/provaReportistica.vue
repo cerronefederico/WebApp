@@ -333,79 +333,92 @@ function updateAllKPIs() {
 
 
 function calcolaProduzioneOraria() {
-    if (filteredContatoriData.value.length === 0) {
-        return [];
-    }
+    // 1. Definizione dell'Intervallo Totale e Durata dello Slot
 
-    const datiCrescentiArrotondati = [...filteredContatoriData.value]
-        .sort((a, b) => new Date(a.ora).getTime() - new Date(b.ora).getTime())
-        .map(item => {
-            const dataOra = new Date(item.ora);
-            dataOra.setMinutes(0, 0, 0);
-
-            return {
-                oraArrotondata: dataOra.toISOString(),
-                contatore: item.contatorepezzitotale || 0,
-            };
-        });
-
-    const gruppiOrari = {};
-
-    datiCrescentiArrotondati.forEach(item => {
-        const chiaveOra = item.oraArrotondata;
-        if (!gruppiOrari[chiaveOra]) {
-            gruppiOrari[chiaveOra] = [];
-        }
-        gruppiOrari[chiaveOra].push(item);
-    });
-
+    // Data di inizio report (mezzanotte del giorno di inizio, UTC)
     const startReport = new Date(`${startDate.value}T00:00:00Z`);
+
+    // Data di fine report (mezzanotte del giorno successivo alla data di fine, UTC)
     const tempEnd = new Date(`${endDate.value}T00:00:00Z`);
     tempEnd.setDate(tempEnd.getDate() + 1);
     const endReport = tempEnd;
 
+    const totalDurationMs = endReport.getTime() - startReport.getTime();
+    const numberOfSlots = 48;
+    // Calcola la durata esatta di ciascuno dei 48 slot in millisecondi
+    const slotDurationMs = totalDurationMs / numberOfSlots;
+
+    // 2. Ordinamento Dati
+
+    // Ordina i dati del contatore cronologicamente (dal più vecchio al più recente)
+    const datiCrescenti = [...filteredContatoriData.value]
+        .sort((a, b) => new Date(a.ora).getTime() - new Date(b.ora).getTime());
+
     const risultatiFinali = [];
 
+    // Variabile per tenere traccia del contatore finale dell'ultimo slot calcolato
+    // Inizializzata con il contatore più vecchio precedente all'inizio del report (se esiste)
     let ultimoContatoreValido = 0;
-    if (filteredContatoriData.value.length > 0) {
-        ultimoContatoreValido = filteredContatoriData.value[filteredContatoriData.value.length - 1].contatorepezzitotale || 0;
+
+    // Cerca il record del contatore più recente che precede O coincide con l'inizio del report
+    const recordPrecedenteAlReport = datiCrescenti.slice().reverse().find(item => {
+        return new Date(item.ora).getTime() <= startReport.getTime();
+    });
+
+    if (recordPrecedenteAlReport) {
+        ultimoContatoreValido = recordPrecedenteAlReport.contatorepezzitotale || 0;
     }
 
-    let contatoreDiInizioCorrente = ultimoContatoreValido;
-    let ultimoContatoreDiProduzione = ultimoContatoreValido;
-
-    let currentHour = new Date(startReport);
-
-    while (currentHour.getTime() < endReport.getTime()) {
-        const oraISO = currentHour.toISOString();
-        const gruppo = gruppiOrari[oraISO];
-
-        let contatoreDiFineCorrente = contatoreDiInizioCorrente;
-        let pezziProdotti = 0;
-
-        if (gruppo && gruppo.length > 0) {
-
-            contatoreDiInizioCorrente = ultimoContatoreDiProduzione;
-
-            contatoreDiFineCorrente = gruppo[gruppo.length - 1].contatore;
-
-            pezziProdotti = contatoreDiFineCorrente - contatoreDiInizioCorrente;
-
-            ultimoContatoreDiProduzione = contatoreDiFineCorrente;
-
-        } else {
-            pezziProdotti = 0;
-            contatoreDiFineCorrente = contatoreDiInizioCorrente;
+    // Se non ci sono dati, ritorna 48 slot a zero per la visualizzazione
+    if (datiCrescenti.length === 0 && !recordPrecedenteAlReport) {
+        for (let i = 0; i < numberOfSlots; i++) {
+            const slotStart = new Date(startReport.getTime() + i * slotDurationMs);
+            risultatiFinali.push({
+                x: slotStart.toISOString(),
+                y: 0,
+            });
         }
+        return risultatiFinali;
+    }
 
-        risultatiFinali.push({
-            x: oraISO,
-            y: pezziProdotti,
+
+    // 3. Iterazione sugli Slot
+
+    for (let i = 0; i < numberOfSlots; i++) {
+        const slotStartMs = startReport.getTime() + i * slotDurationMs;
+        // Il punto finale dello slot è l'inizio dello slot successivo
+        const slotEndMs = startReport.getTime() + (i + 1) * slotDurationMs;
+        const slotStartISO = new Date(slotStartMs).toISOString();
+
+        // Il contatore iniziale dello slot è il contatore finale dello slot precedente (o il valore iniziale se è il primo slot)
+        const contatoreIniziale = ultimoContatoreValido;
+        let contatoreFinale = contatoreIniziale; // Valore predefinito se non ci sono dati nello slot
+
+        // Trova tutti i record all'interno dello slot (Start INCLUSO, End ESCLUSO)
+        const datiNelloSlot = datiCrescenti.filter(item => {
+            const itemTimeMs = new Date(item.ora).getTime();
+            return itemTimeMs >= slotStartMs && itemTimeMs < slotEndMs;
         });
 
-        currentHour.setHours(currentHour.getHours() + 1);
+        // 4. Calcolo Produzione per lo Slot
 
-        contatoreDiInizioCorrente = ultimoContatoreDiProduzione;
+        if (datiNelloSlot.length > 0) {
+            // Se ci sono dati nello slot, il contatore finale è l'ultimo valore nello slot
+            contatoreFinale = datiNelloSlot[datiNelloSlot.length - 1].contatorepezzitotale || 0;
+        }
+        // Se non ci sono dati, contatoreFinale rimane uguale a contatoreIniziale
+
+        // Aggiorna il contatore finale per l'uso nello slot successivo
+        ultimoContatoreValido = contatoreFinale;
+
+        // Calcola la produzione (deve essere >= 0)
+        const pezziProdotti =contatoreFinale - contatoreIniziale;
+
+        risultatiFinali.push({
+            // Assegna la produzione all'ora di inizio dello slot
+            x: slotStartISO,
+            y: pezziProdotti,
+        });
     }
 
     return risultatiFinali;
@@ -453,7 +466,15 @@ const chartOptions = computed(() => ({
     dataLabels: {
         enabled: true,
         formatter: function (val) {
+            // Se il valore è 0, restituisce una stringa vuota per nascondere l'etichetta
+            if (val === 0) {
+                return '';
+            }
+            // Altrimenti, formatta e mostra il valore
             return val.toFixed(0);
+        },
+        style: {
+            colors: ['#000000']
         }
     },
     tooltip: {
